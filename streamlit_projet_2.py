@@ -46,9 +46,10 @@ st.sidebar.write("Veuillez choisir une compositrice/un compositeur :")
 # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df['composer'].unique())
 # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
 
-# # Filtrer votre DataFrame en fonction des sélections
-# filtered_df = df[df['title'].isin(selected_films) & df['actress/actor'].isin(selected_actors) &
-#                  df['director'].isin(selected_directors) & df['composer'].isin(selected_composers)]
+# # Filtrer par compagnie
+st.sidebar.write("Veuillez choisir une compagnie :")
+# selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df['composer'].unique())
+# selected_composer = re.sub(r"[:',-]", " ", selected_composer)
 
 # # Afficher les résultats
 st.write("Résultats de la recherche :")
