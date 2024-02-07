@@ -107,34 +107,10 @@ if selected=="Recommendation":
     st.sidebar.title('Votre système de recommandation')
 
     # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-    st.sidebar.write("Veuillez choisir un film :")
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
-    st.write(type(selected_film))
-    st.write(type(df_ML['french_title']))
 
-    # # Filtrer par acteur
-    st.sidebar.write("Veuillez choisir une actrice/un acteur :")
-    selected_actor = st.sidebar.multiselect('Sélectionnez le genre', citations_films)
-
-    # # Filtrer par réal
-    st.sidebar.write("Veuillez choisir une réalisatrice/un réalisateur :")
-    selected_director = st.sidebar.multiselect('Sélectionnez une personne', df_ML['directors'].unique())
-
-    # # # Filtrer par compositeur
-    # st.sidebar.write("Veuillez choisir une compositrice/un compositeur :")
-    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composers'].unique())
-    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
-
-    # # # Filtrer par compagnie
-    # st.sidebar.write("Veuillez choisir une compagnie :")
-    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composer'].unique())
-    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
-
-    # # # Filtrer par compagnie
-    # st.sidebar.write("Veuillez choisir une compagnie :")
-    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composer'].unique())
-    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
-
+    # # Filtrer par d'autres conditions
+    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s,acteur(s)/actrice(s),réalisateur):", citations_films)
 
 if selected=="Le petit +":
     #Header
