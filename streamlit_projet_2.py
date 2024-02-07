@@ -19,7 +19,7 @@ from streamlit_option_menu import option_menu
 
 # Import dataset
 df_ML = pd.read_csv('movie_beforeML.csv')
-
+    
 #Configuration de la page
 st.set_page_config(
     page_title="Projet2xCBC",
