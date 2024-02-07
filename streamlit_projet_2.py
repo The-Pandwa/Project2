@@ -43,7 +43,7 @@ citations_films = [
 # Sélectionner une citation aléatoire
 citation_aleatoire = random.choice(citations_films)
 
-with st.spinner(citation_aleatoire):
+with st.spinner.subheader(citation_aleatoire):
     time.sleep(5)
 st.success('Done!')
 
