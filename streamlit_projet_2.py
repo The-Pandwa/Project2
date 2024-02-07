@@ -27,7 +27,20 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed")
 
-with st.spinner('Wait for it...'):
+citations_films = [
+    "Que la Force soit avec toi. - Star Wars (1977)",
+    "On se reverra toujours à Casablanca. - Casablanca (1942)",
+    "J'ai besoin de la vitesse. - Top Gun (1986)",
+    "La vie, c'est comme une boîte de chocolats ; on ne sait jamais sur quoi on va tomber. - Forrest Gump (1994)",
+    "Il n'y a pas de place comme chez soi. - Le Magicien d'Oz (1939)",
+    "Je reviendrai. - Terminator (1984)",
+    "Vers l'infini et au-delà ! - Toy Story (1995)",
+    "Voici Johnny ! - Shining (1980)",
+    "Je suis le roi du monde ! - Titanic (1997)",
+    "Pourquoi si sérieux ? - The Dark Knight (2008)"
+]
+
+with st.spinner(citations_films):
     time.sleep(5)
 st.success('Done!')
 
