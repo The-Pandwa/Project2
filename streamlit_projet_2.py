@@ -82,7 +82,6 @@ citation_aleatoire = random.choice(citations_films)
 
 with st.spinner(citation_aleatoire):
     time.sleep(5)
-st.success('Done!')
 
 #Options Menu
 with st.sidebar:
@@ -96,6 +95,7 @@ if selected=="Présentation":
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache pied pour vous, et nous sommes fier de nous proposer notre outil.")
     st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
     st.subheader("Guide de bonne pratique :")
+    st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")    
 
 if selected=="Recommendation":
     #Header
