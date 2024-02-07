@@ -32,48 +32,18 @@ citations_films = [
     "On se reverra toujours à Casablanca. - Casablanca (1942)",
     "J'ai besoin de la vitesse. - Top Gun (1986)",
     "La vie, c'est comme une boîte de chocolats ; on ne sait jamais sur quoi on va tomber. - Forrest Gump (1994)",
-    "Il n'y a pas de place comme chez soi. - Le Magicien d'Oz (1939)",
     "Je reviendrai. - Terminator (1984)",
     "Vers l'infini et au-delà ! - Toy Story (1995)",
     "Voici Johnny ! - Shining (1980)",
     "Je suis le roi du monde ! - Titanic (1997)",
-    "Pourquoi si sérieux ? - The Dark Knight (2008)",
+    "Pourquoi cet air si sérieux ? - The Dark Knight (2008)",
     "La peur est le chemin vers le côté obscur. - Star Wars: Épisode I - La Menace Fantôme (1999)",
-    "Ils ne savaient pas que c'était impossible, alors ils l'ont fait. - Mark Twain",
-    "La simplicité est la sophistication suprême. - Léonard de Vinci",
-    "La vie n'est pas d'attendre que les orages passent, c'est d'apprendre à danser sous la pluie. - Sénèque",
-    "Il n'y a pas de génie sans un grain de folie. - Aristote",
-    "La seule façon de faire du bon travail est d'aimer ce que vous faites. - Steve Jobs",
-    "On n'arrête pas de jouer parce qu'on vieillit; on vieillit parce qu'on arrête de jouer. - Benjamin Franklin",
-    "Rien n'est impossible, le mot lui-même dit 'je suis possible'. - Audrey Hepburn",
-    "Le bonheur est parfois caché dans l'inconnu. - Victor Hugo",
-    "Il vaut mieux être détesté pour ce que l'on est que d'être aimé pour ce que l'on n'est pas. - André Gide",
-    "C'est en faisant n'importe quoi qu'on devient n'importe qui. - Michel Audiard",
-    "La vie est un mystère qu'il faut vivre, et non un problème à résoudre. - Gandhi",
-    "L'amour, c'est l'infini mis à la portée des caniches. - Louis-Ferdinand Céline",
-    "L'échec est le fondement de la réussite. - Lao Tseu",
-    "L'avenir appartient à ceux qui croient en la beauté de leurs rêves. - Eleanor Roosevelt",
-    "La véritable grandeur consiste à être maître de soi. - Michel de Montaigne",
-    "Il n'y a que deux façons de vivre sa vie : l'une en faisant comme si rien n'était un miracle, l'autre en faisant comme si tout était un miracle. - Albert Einstein",
-    "La meilleure façon de prédire l'avenir, c'est de le créer. - Peter Drucker",
-    "On ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux. - Antoine de Saint-Exupéry",
-    "Le succès, c'est d'aller d'échec en échec sans perdre son enthousiasme. - Winston Churchill",
-    "Rien n'est permanent sauf le changement. - Héraclite",
-    "Le courage n'est pas l'absence de peur, mais la capacité de la vaincre. - Nelson Mandela",
-    "L'art de la vie consiste en un équilibre entre l'aventure et la retenue. - Teddy Roosevelt",
-    "Il vaut mieux être optimiste et se tromper que pessimiste et avoir raison. - Albert Einstein",
-    "Soyez vous-même, les autres sont déjà pris. - Oscar Wilde",
-    "Le succès c'est d'aller d'échec en échec sans perdre son enthousiasme. - Winston Churchill",
-    "La vie est vraiment simple, mais nous insistons à la rendre compliquée. - Confucius",
-    "Le bonheur n'est pas d'avoir tout ce que l'on désire, mais d'apprécier ce que l'on a. - Confucius",
-    "Liberté, égalité, fraternité. - La Haine (1995)",
     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
     "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
     "Moi, j'ai pas d'amis. - Amélie Poulain (2001)",
     "On n'est pas chez Mémé ici. - La Grande Vadrouille (1966)",
     "Je suis Spartacus ! - Spartacus (1960)",
     "T'as de beaux yeux, tu sais. - Le Quai des Brumes (1938)",
-    "Le café des délices. - La Haine (1995)",
     "Je veux être seul. - L'As de Pique (1932)",
     "Écoutez-moi bien, Monsieur. - Le Dictateur (1940)",
     "Je suis ce que je suis. - Les Enfants du Paradis (1945)",
@@ -84,7 +54,7 @@ citations_films = [
     "La morale, c'est comme la confiture, moins on en a, plus on l'étale. - Les Valseuses (1974)",
     "Vous n'avez rien compris à rien. - Hiroshima mon amour (1959)",
     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
-        "Je suis un homme, je ne peux pas me passer de femmes. - La Cité de la Peur (1994)",
+    "Je suis un homme, je ne peux pas me passer de femmes. - La Cité de la Peur (1994)",
     "Quand on mettra les cons sur orbite, t'as pas fini de tourner. - Michel Audiard",
     "C'est l'histoire d'un homme qui tombe d'un immeuble de 50 étages. Le mec, au fur et à mesure de sa chute, il se répète sans cesse pour se rassurer : jusqu'ici tout va bien, jusqu'ici tout va bien, jusqu'ici tout va bien. - La Haine (1995)",
     "Si tu es gêné par le bruit des autres, apprends à ne pas être gêné par ta propre respiration. - Amélie Poulain (2001)",
@@ -92,13 +62,19 @@ citations_films = [
     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
     "C'est un roc ! C'est un pic ! C'est un cap ! Que dis-je, c'est un cap ? C'est une péninsule ! - Cyrano de Bergerac (1990)",
     "On ne devrait jamais quitter Montauban. - L'Armée des Ombres (1969)",
-    "Tous les films de Louis de Funès sont des films d'horreur. - Quentin Tarantino",
-    "Si la merde valait de l'or, les pauvres naîtraient sans trou du cul. - Coluche",
-    "On peut rire de tout, mais pas avec tout le monde. - Pierre Desproges",
     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
-    "L'humour est une déclaration de dignité, une affirmation de la supériorité de l'homme sur ce qui lui arrive. - Romain Gary",
     "Je suis fatigué patron, fatigué de devoir courir les routes et d'être seul comme un moineau sous la pluie. - Les Temps Modernes (1936)",
-    "La vie c'est comme une bicyclette, il faut avancer pour ne pas perdre l'équilibre. - Albert Einstein"
+    "L'Égypte, c'est un pays de contrastes. D'un côté, vous avez la ville, et de l'autre, le désert. Un peu comme Paris et Marne-la-Vallée. - OSS 117 : Le Caire, nid d'espions (2006)"
+    "La première règle du Fight Club est : il est interdit de parler du Fight Club. La seconde règle du Fight Club est : il est interdit de parler du Fight Club. - Fight Club (1999)"
+    "Maintenant, si ça ne vous dérange pas, je vais me coucher, avant que l'un de vous ait encore une brillante idée pour nous faire tuer…ou pire, nous faire expulser ! - Harry Potter à l'école des sorciers (2001)"
+    "C’est à moi que tu parles ? C’est à moi que tu parles ??... - Taxi Driver (1976)"
+    "La différence entre toi et moi, c’est que moi j’ai la classe - Men in Black (1997)"
+    "J’adore l’odeur du napalm au petit matin. - Apocalypse Now (1979)"
+    "Le coup le plus rusé que le diable ait jamais réussi, c’est de faire croire à tout le monde qu’il n’existait pas. - Usual Suspect (1995)"
+    "- C’est bon on peut les avoir. - Ils sont très loin. - Lancez-moi. - Pardon ? - Je ne peux pas sauter aussi loin alors lancez-moi ! - Entendu. - Eh, heu le dites pas à l’Elfe, hein? - Pas un mot. - Le Seigneur des anneaux : Les Deux Tours (2002)"
+    "Pas de bras, pas de chocolat - Intouchable (2011)"
+    "Balance man... Cadence man... Trace la glace c'est le Coooool Rasta ! - Rasta Rockett (1993)"
+    "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres. Des gens qui m’ont tendu la main, peut-être à un moment où je ne pouvais pas, où j’étais seul chez moi. Et c’est assez curieux de se dire que les hasards, les rencontres forgent une destinée... Parce que quand on a le goût de la chose, quand on a le goût de la chose bien faite, le beau geste, parfois on ne trouve pas l’interlocuteur en face je dirais, le miroir qui vous aide à avancer. Alors ça n’est pas mon cas, comme je disais là, puisque moi au contraire, j’ai pu ; et je dis merci à la vie, je lui dis merci, je chante la vie, je danse la vie... je ne suis qu’amour ! Et finalement, quand des gens me disent « Mais comment fais-tu pour avoir cette humanité ? », je leur réponds très simplement que c’est ce goût de l’amour, ce goût donc qui m’a poussé aujourd’hui à entreprendre une construction mécanique... mais demain qui sait ? Peut-être simplement à me mettre au service de la communauté, à faire le don, le don de soi. - Astérix et Obélix : Mission Cléopâtre (2002)"
 ]
 
 # Sélectionner une citation aléatoire
