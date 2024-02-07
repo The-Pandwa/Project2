@@ -109,6 +109,7 @@ if selected=="Recommendation":
     # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
     st.sidebar.write("Veuillez choisir un film :")
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
+    type(selected_film)
 
     # # Filtrer par acteur
     st.sidebar.write("Veuillez choisir une actrice/un acteur :")
