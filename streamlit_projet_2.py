@@ -83,5 +83,3 @@ if selected=="Le petit +":
 
 # Interface visuel
 # Voir live coding Florent sur Streamlit pour arranger le visuel des reco films
-
-st.dataframe(df_ML)
