@@ -92,9 +92,10 @@ with st.sidebar:
 if selected=="Présentation":
     #Header
     st.title("Le mode d'emploi :")
-    st.subheader("Si vous ne suivez pas ces recommendations, c'est à vos risques et périls !")
-    st.write("Salut la compagnie !")
-    st.write("Attention à la marche")
+    st.subheader("Bienvenue sur notre système de recommendation !")
+    st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache pied pour vous, et nous sommes fier de nous proposer notre outil.")
+    st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
+    st.subheader("Guide de bonne pratique :")
 
 if selected=="Recommendation":
     #Header
