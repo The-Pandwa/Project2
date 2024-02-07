@@ -40,7 +40,10 @@ citations_films = [
     "Pourquoi si sérieux ? - The Dark Knight (2008)"
 ]
 
-with st.spinner(citations_films):
+# Sélectionner une citation aléatoire
+citation_aleatoire = random.choice(citations_films)
+
+with st.spinner(citation_aleatoire):
     time.sleep(5)
 st.success('Done!')
 
