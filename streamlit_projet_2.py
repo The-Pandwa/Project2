@@ -75,7 +75,7 @@ if selected=="Recommendation":
     # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
 
 
-if selected=="Le grand +":
+if selected=="Le petit +":
     #Header
     st.title("Le modele d'defdsvdv :")
     st.subheader("Si vo !")
@@ -83,3 +83,5 @@ if selected=="Le grand +":
 
 # Interface visuel
 # Voir live coding Florent sur Streamlit pour arranger le visuel des reco films
+
+st.dataframe(df_ML)
