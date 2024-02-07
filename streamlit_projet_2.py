@@ -105,7 +105,6 @@ if selected=="Présentation":
     st.write("**Explorez, Découvrez, Appréciez**")
     st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
 
-
 if selected=="Recommendation":
     #Header
     st.title('Welcome Bitch ! <3')
@@ -125,4 +124,5 @@ if selected=="Le petit +":
     #Header
     st.title("Le modele d'defdsvdv :")
     st.subheader("Si vo !")
-    st.write("Salut la compagnie !\n qsdsqc à la marche")
+    st.write("Salut la compagnie !")
+    st.write("qsdsqc à la marche")
