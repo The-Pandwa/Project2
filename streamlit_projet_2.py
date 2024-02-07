@@ -33,7 +33,7 @@ with st.sidebar:
 
 if selected=="Présentation":
     #Header
-    st.title("Le modele d'emploi :")
+    st.title("Le mode d'emploi :")
     st.subheader("Si vous ne suivez pas ces recommendations, c'est à vos risques et périls !")
     st.write("Salut la compagnie !")
     st.write("Attention à la marche")
