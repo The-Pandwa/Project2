@@ -102,7 +102,7 @@ if selected=="Présentation":
     st.write("Ah, c'est là que réside toute l'excitation ! Nous combinons l'art et la science du cinéma avec un algorithme élaboré qui analyse vos préférences, vos humeurs et même vos curiosités cachées. Les détails spécifiques restent confidentiels, mais soyez assuré, c'est ce mystère qui rend chaque recommandation spéciale.")
     st.write("*Laissez-vous surprendre !*")
     st.write("Préparez-vous à être émerveillé par des découvertes cinématographiques uniques, des chefs-d'œuvre méconnus et des pépites du septième art que notre algorithme secret a soigneusement sélectionnées pour vous.")
-    st.write("*Explorez, Découvrez, Appréciez*")
+    st.write("**Explorez, Découvrez, Appréciez**")
     st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
 
 
