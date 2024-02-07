@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
 import random
+import time
 import streamlit as st
 from streamlit_option_menu import option_menu
 
@@ -25,6 +26,10 @@ st.set_page_config(
     page_title="Projet2xCBC",
     layout="wide",
     initial_sidebar_state="collapsed")
+
+with st.spinner('Wait for it...'):
+    time.sleep(5)
+st.success('Done!')
 
 #Options Menu
 with st.sidebar:
