@@ -94,7 +94,7 @@ if selected=="Présentation":
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Exclusif !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
     st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
-    st.subheader("**Guide de bonne pratique :**")
+    st.subheader("*_Guide de bonne pratique :_*")
     st.write("Plongez dans l'univers du cinéma avec notre système de recommandation révolutionnaire, où chaque suggestion est soigneusement élaborée par un algorithme secret, gardé jalousement derrière le voile du mystère. Notre mission est de transformer votre expérience cinématographique en une aventure unique, sur mesure pour vous.")
     st.write("*Pourquoi secret ?*")
     st.write("Parce que la magie réside dans l'inattendu. Notre algorithme ne se contente pas de suivre les tendances ou de se conformer aux attentes habituelles. Au contraire, il explore des horizons inexplorés pour vous surprendre avec des recommandations que vous n'auriez jamais imaginées.")
