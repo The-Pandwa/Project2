@@ -91,12 +91,20 @@ with st.sidebar:
 if selected=="Présentation":
     #Header
     st.title("Le mode d'emploi :")
-    st.subheader("Bienvenue sur notre système de recommendation !")
-    st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache pied pour vous, et nous sommes fier de nous proposer notre outil.")
+    st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Exclusif !")
+    st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
     st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
-    st.subheader("Guide de bonne pratique :")
-    st.write("Le premier champs, vous permet de choisir un titre de film, afin de trouver des titres similaires.")
-    st.write("Le second champ, vous permet de choisir d'autres options de recherche, tels que le(s) genre(s), le nom des acteurs, d'un réalisateur, d'un compositeur mais aussi parmi le top 10 des compagnies de production les plus célèbres ! ")
+    st.subheader("_Guide de bonne pratique :_")
+    st.write("Plongez dans l'univers du cinéma avec notre système de recommandation révolutionnaire, où chaque suggestion est soigneusement élaborée par un algorithme secret, gardé jalousement derrière le voile du mystère. Notre mission est de transformer votre expérience cinématographique en une aventure unique, sur mesure pour vous.")
+    st.write("*Pourquoi secret ?*")
+    st.write("Parce que la magie réside dans l'inattendu. Notre algorithme ne se contente pas de suivre les tendances ou de se conformer aux attentes habituelles. Au contraire, il explore des horizons inexplorés pour vous surprendre avec des recommandations que vous n'auriez jamais imaginées.")
+    st.write("*Comment ça marche ?*")
+    st.write("Ah, c'est là que réside toute l'excitation ! Nous combinons l'art et la science du cinéma avec un algorithme élaboré qui analyse vos préférences, vos humeurs et même vos curiosités cachées. Les détails spécifiques restent confidentiels, mais soyez assuré, c'est ce mystère qui rend chaque recommandation spéciale.")
+    st.write("*Laissez-vous surprendre !*")
+    st.write("Préparez-vous à être émerveillé par des découvertes cinématographiques uniques, des chefs-d'œuvre méconnus et des pépites du septième art que notre algorithme secret a soigneusement sélectionnées pour vous.")
+    st.write("*Explorez, Découvrez, Appréciez*")
+    st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
+
 
 if selected=="Recommendation":
     #Header
