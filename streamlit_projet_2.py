@@ -75,7 +75,7 @@ if selected=="Recommendation":
     # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
 
 
-if selected=="Le petit +":
+if selected=="Le grand +":
     #Header
     st.title("Le modele d'defdsvdv :")
     st.subheader("Si vo !")
