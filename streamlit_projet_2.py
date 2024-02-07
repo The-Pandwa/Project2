@@ -95,7 +95,8 @@ if selected=="Présentation":
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache pied pour vous, et nous sommes fier de nous proposer notre outil.")
     st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
     st.subheader("Guide de bonne pratique :")
-    st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")    
+    st.write("Le premier champs, vous permet de choisir un titre de film, afin de trouver des titres similaires.")
+    st.write("Le second champ, vous permet de choisir d'autres options de recherche, tels que le(s) genre(s), le nom des acteurs, d'un réalisateur, d'un compositeur mais aussi parmi le top 10 des compagnies de production les plus célèbres ! ")
 
 if selected=="Recommendation":
     #Header
@@ -110,13 +111,10 @@ if selected=="Recommendation":
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
 
     # # Filtrer par d'autres conditions
-    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s,acteur(s)/actrice(s),réalisateur):", citations_films)
+    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", citations_films)
 
 if selected=="Le petit +":
     #Header
     st.title("Le modele d'defdsvdv :")
     st.subheader("Si vo !")
     st.write("Salut la compagnie !\n qsdsqc à la marche")
-
-# Interface visuel
-# Voir live coding Florent sur Streamlit pour arranger le visuel des reco films
