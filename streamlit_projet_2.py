@@ -110,10 +110,11 @@ if selected=="Recommendation":
     st.sidebar.write("Veuillez choisir un film :")
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
     st.write(type(selected_film))
+    st.write(type(df_ML['french_title']))
 
     # # Filtrer par acteur
     st.sidebar.write("Veuillez choisir une actrice/un acteur :")
-    selected_actor = st.sidebar.multiselect('Sélectionnez le genre', df_ML['actors'].unique())
+    selected_actor = st.sidebar.multiselect('Sélectionnez le genre', citations_films)
 
     # # Filtrer par réal
     st.sidebar.write("Veuillez choisir une réalisatrice/un réalisateur :")
