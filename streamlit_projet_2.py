@@ -90,7 +90,7 @@ with st.sidebar:
 
 if selected=="Présentation":
     #Header
-    st.title("**__Le mode d'emploi :__**")
+    st.title("<u>**Le mode d'emploi :**</u>")
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Exclusif !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
     st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
