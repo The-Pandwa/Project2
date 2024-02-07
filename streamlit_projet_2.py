@@ -81,7 +81,7 @@ citations_films = [
 citation_aleatoire = random.choice(citations_films)
 
 with st.spinner(citation_aleatoire):
-    time.sleep(7)
+    time.sleep(5)
 st.success('Done!')
 
 #Options Menu
