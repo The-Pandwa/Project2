@@ -8,55 +8,78 @@ Original file is located at
 """
 
 # Import Library
-import streamlit as st
 import pandas as pd
-import seaborn as sns
+import numpy as np
 import matplotlib.pyplot as plt
+import plotly.express as px
+import seaborn as sns
+import random
+import streamlit as st
+from streamlit_option_menu import option_menu
 
 # Import dataset
-link = "https://raw.githubusercontent.com/murpi/wilddata/master/quests/cars.csv"
-df_cars = pd.read_csv(link)
+df_ML = pd.read_csv('movie_beforeML.csv')
 
-# URL de l'image sur GitHub
-github_image_url = "https://github.com/The-Pandwa/Project2/tree/main/image"
+#Configuration de la page
+st.set_page_config(
+    page_title="Projet2xCBC",
+    layout="wide",
+    initial_sidebar_state="collapsed")
 
-# Afficher l'image dans la barre latérale
-st.sidebar.image(github_image_url, use_column_width=True)
+#Options Menu
+with st.sidebar:
+    selected = option_menu('Projet2xCBC', ["Présentation", 'Recommendation','Le petit +'],
+    icons=['play-btn','search','info-circle'], menu_icon='intersect', default_index=0)
 
-# Création de la sidebar et features
-st.sidebar.title('Votre système de recommandation')
+if selected=="Présentation":
+    #Header
+    st.title("Le modele d'emploi :")
+    st.subheader("Si vous ne suivez pas ces recommendations, c'est à vos risques et périls !")
+    st.write("Salut la compagnie !")
+    st.write("Attention à la marche")
 
-# # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-st.sidebar.write("Veuillez choisir un film :")
-# selected_film = st.sidebar.multiselect('Sélectionnez votre film', df['title'].unique())
-# selected_film = re.sub(r"[:',-]", " ", selected_film)
+if selected=="Recommendation":
+    #Header
+    st.title('Welcome Bitch ! <3')
+    st.subheader('Find your perfect film !')
 
-# # Filtrer par acteur
-st.sidebar.write("Veuillez choisir une actrice/un acteur :")
-# selected_actor = st.sidebar.multiselect('Sélectionnez votre actrice/acteur', df['actress/actor'].unique())
-# selected_actor = re.sub(r"[:',-]", " ", selected_actor)
+    st.divider()
+    # Création de la sidebar et features
+    st.sidebar.title('Votre système de recommandation')
 
-# # Filtrer par réal
-st.sidebar.write("Veuillez choisir une réalisatrice/un réalisateur :")
-# selected_director = st.sidebar.multiselect('Sélectionnez une réalisatrice/réalisateur', df['director'].unique())
-# selected_director = re.sub(r"[:',-]", " ", selected_director)
+    # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+    st.sidebar.write("Veuillez choisir un film :")
+    selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
 
-# # Filtrer par compositeur
-st.sidebar.write("Veuillez choisir une compositrice/un compositeur :")
-# selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df['composer'].unique())
-# selected_composer = re.sub(r"[:',-]", " ", selected_composer)
+    # # Filtrer par acteur
+    st.sidebar.write("Veuillez choisir une actrice/un acteur :")
+    selected_actor = st.sidebar.multiselect('Sélectionnez le genre', df_ML['actors'].unique())
 
-# # Filtrer par compagnie
-st.sidebar.write("Veuillez choisir une compagnie :")
-# selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df['composer'].unique())
-# selected_composer = re.sub(r"[:',-]", " ", selected_composer)
+    # # Filtrer par réal
+    st.sidebar.write("Veuillez choisir une réalisatrice/un réalisateur :")
+    selected_director = st.sidebar.multiselect('Sélectionnez une personne', df_ML['directors'].unique())
 
-# # Afficher les résultats
-st.write("Résultats de la recherche :")
-# st.write(filtered_df)
+    # # # Filtrer par compositeur
+    # st.sidebar.write("Veuillez choisir une compositrice/un compositeur :")
+    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composers'].unique())
+    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
 
-# Système de recommandation :
-st.write("Voici nos recommandations en fonction des critères choisis :")
+    # # # Filtrer par compagnie
+    # st.sidebar.write("Veuillez choisir une compagnie :")
+    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composer'].unique())
+    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
+
+    # # # Filtrer par compagnie
+    # st.sidebar.write("Veuillez choisir une compagnie :")
+    # selected_composer = st.sidebar.multiselect('Sélectionnez une compositrice/compositeur', df_ML['composer'].unique())
+    # # selected_composer = re.sub(r"[:',-]", " ", selected_composer)
+
+
+if selected=="Le petit +":
+    #Header
+    st.title("Le modele d'defdsvdv :")
+    st.subheader("Si vo !")
+    st.write("Salut la compagnie !\n qsdsqc à la marche")
 
 # Interface visuel
 # Voir live coding Florent sur Streamlit pour arranger le visuel des reco films
