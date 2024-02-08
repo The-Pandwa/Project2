@@ -78,20 +78,23 @@ citations_films = [
 ]
 
 phrase_chargement = [
-    "Plonger dans la matrice en cours",
+    "Plongée dans la matrice en cours",
     "En attente de l'arrivée des dinosaures",
     "Chargement dans l'espace-temps, façon Retour vers le Futur.",
     "Élaboration de votre Truman Show personnel",
     "Tentative d'éviter l'iceberg droit devant !",
-    "Saut dans l'hyperespace",
+    "Saut dans l'hyperespace cinéphile",
     "Auto-destruction de l'écran de chargement en cours...",
     "Préparation de votre rêve partagé",
     "Ouverture d'une brèche dans votre chargement à coup de hache",
-    "C'est un écran, un écran de chargement ",
+    "Je suis un écran, un écran de chargement ",
     "Déchiffrement du Da Vinci Code en cours...",
     "Recrutement de nouveau Avengers en cours ",
     "Concoction de votre potion cinématographique en cours.",
-    "Création de la communauté des cinéphiles"
+    "Création de la communauté des cinéphiles",
+    "Envolé de l'écran de chargement à vélo",
+    "Voyage vers l'inconnu  et l'au delà cinématographique !",
+    "Exposition à la kryptonite en cours"
 ]
 
 # Sélectionner une citation aléatoire
