@@ -111,7 +111,7 @@ with st.sidebar:
 if selected=="Présentation":
     #Header
     st.title("**Le mode d'emploi :**")
-    st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Exclusif !")
+    st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Inédit !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
     st.subheader("**__Guide de bonne pratique :__**")
     st.write("Plongez dans l'univers du cinéma avec notre système de recommandation révolutionnaire, où chaque suggestion est soigneusement élaborée par un algorithme secret, gardé jalousement derrière le voile du mystère. Notre mission est de transformer votre expérience cinématographique en une aventure unique, sur mesure pour vous.")
@@ -124,7 +124,7 @@ if selected=="Présentation":
     st.write("**Explorez, Découvrez, Appréciez**")
     st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
     st.write("**Encore là ?**")
-    st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile !")
+    st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile ! Parcourez nos onglets et vous pourrez profitez d'une option parfaite pour voir les meilleurs du pires du cinéma !")
 
 
 if selected=="Recommendation":
