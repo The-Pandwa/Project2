@@ -103,9 +103,11 @@ citation_aleatoire = random.choice(phrase_chargement)
 with st.spinner(citation_aleatoire):
     time.sleep(5)
 
+projet = st.button('PROJET 2')
+
 #Options Menu
 with st.sidebar:
-    selected = option_menu('Projet2xCBC', ["Présentation", 'Recommendation','Le petit +'],
+    selected = option_menu(projet, ["Présentation", 'Recommendation','Le petit +'],
     icons=['play-btn','search','info-circle'], menu_icon='intersect', default_index=0)
 
 if selected=="Présentation":
