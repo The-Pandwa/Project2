@@ -113,7 +113,6 @@ if selected=="Présentation":
     st.title("**Le mode d'emploi :**")
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Exclusif !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
-    st.write("Si vous avez le courage de lire ce mode d'emploi, vous débloquerez un *easter egg* essentiel à votre passion de cinéphile !")
     st.subheader("**__Guide de bonne pratique :__**")
     st.write("Plongez dans l'univers du cinéma avec notre système de recommandation révolutionnaire, où chaque suggestion est soigneusement élaborée par un algorithme secret, gardé jalousement derrière le voile du mystère. Notre mission est de transformer votre expérience cinématographique en une aventure unique, sur mesure pour vous.")
     st.write("**Pourquoi secret ?**")
@@ -121,13 +120,16 @@ if selected=="Présentation":
     st.write("**Comment ça marche ?**")
     st.write("Ah, c'est là que réside toute l'excitation ! Nous combinons l'art et la science du cinéma avec un algorithme élaboré qui analyse vos préférences, vos humeurs et même vos curiosités cachées. Les détails spécifiques restent confidentiels, mais soyez assuré, c'est ce mystère qui rend chaque recommandation spéciale.")
     st.write("**Laissez-vous surprendre !**")
-    st.write("Préparez-vous à être émerveillé par des découvertes cinématographiques uniques, des chefs-d'œuvre méconnus et des pépites du septième art que notre algorithme secret a soigneusement sélectionnées pour vous.")
+    st.write("Préparez-vous à être émerveillé par des découvertes cinématographiques uniques, des chefs-d'œuvre méconnus et des pépites du septième art que notre algorithme a soigneusement sélectionnées pour vous.")
     st.write("**Explorez, Découvrez, Appréciez**")
     st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
+    st.write("**Encore là ?**")
+    st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile !")
+
 
 if selected=="Recommendation":
     #Header
-    st.title('Welcome Bitch ! <3')
+    st.title("Voici pour vous, nos suggestions d'après vos critères")
     st.subheader('Find your perfect film !')
 
     st.divider()
