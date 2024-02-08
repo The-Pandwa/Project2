@@ -17,6 +17,15 @@ import random
 import time
 import streamlit as st
 from streamlit_option_menu import option_menu
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import MinMaxScaler
+import ast
+from collections import Counter
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
+from ast import literal_eval
+from datetime import datetime
+from PIL import Image
 
 # Import dataset
 df_ML = pd.read_csv('movie_beforeML.csv')
@@ -27,55 +36,55 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed")
 
-citations_films = [
-    "Que la Force soit avec toi. - Star Wars (1977)",
-    "On se reverra toujours à Casablanca. - Casablanca (1942)",
-    "J'ai besoin de la vitesse. - Top Gun (1986)",
-    "La vie, c'est comme une boîte de chocolats ; on ne sait jamais sur quoi on va tomber. - Forrest Gump (1994)",
-    "Je reviendrai. - Terminator (1984)",
-    "Vers l'infini et au-delà ! - Toy Story (1995)",
-    "Voici Johnny ! - Shining (1980)",
-    "Je suis le roi du monde ! - Titanic (1997)",
-    "Pourquoi cet air si sérieux ? - The Dark Knight (2008)",
-    "La peur est le chemin vers le côté obscur. - Star Wars: Épisode I - La Menace Fantôme (1999)",
-    "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
-    "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
-    "Moi, j'ai pas d'amis. - Amélie Poulain (2001)",
-    "On n'est pas chez Mémé ici. - La Grande Vadrouille (1966)",
-    "Je suis Spartacus ! - Spartacus (1960)",
-    "T'as de beaux yeux, tu sais. - Le Quai des Brumes (1938)",
-    "Je veux être seul. - L'As de Pique (1932)",
-    "Écoutez-moi bien, Monsieur. - Le Dictateur (1940)",
-    "Je suis ce que je suis. - Les Enfants du Paradis (1945)",
-    "C'est un truc de fou. - Les Tontons Flingueurs (1963)",
-    "La classe américaine, c'est nous. - La Classe Américaine (1993)",
-    "Elle est où la poulette ? - Le Père Noël est une ordure (1982)",
-    "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
-    "La morale, c'est comme la confiture, moins on en a, plus on l'étale. - Les Valseuses (1974)",
-    "Vous n'avez rien compris à rien. - Hiroshima mon amour (1959)",
-    "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
-    "Je suis un homme, je ne peux pas me passer de femmes. - La Cité de la Peur (1994)",
-    "Quand on mettra les cons sur orbite, t'as pas fini de tourner. - Michel Audiard",
-    "C'est l'histoire d'un homme qui tombe d'un immeuble de 50 étages. Le mec, au fur et à mesure de sa chute, il se répète sans cesse pour se rassurer : jusqu'ici tout va bien, jusqu'ici tout va bien, jusqu'ici tout va bien. - La Haine (1995)",
-    "Si tu es gêné par le bruit des autres, apprends à ne pas être gêné par ta propre respiration. - Amélie Poulain (2001)",
-    "Il vaut mieux mobiliser son intelligence sur des conneries que mobiliser sa connerie sur des choses intelligentes. - Les Tontons Flingueurs (1963)",
-    "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
-    "C'est un roc ! C'est un pic ! C'est un cap ! Que dis-je, c'est un cap ? C'est une péninsule ! - Cyrano de Bergerac (1990)",
-    "On ne devrait jamais quitter Montauban. - L'Armée des Ombres (1969)",
-    "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
-    "Je suis fatigué patron, fatigué de devoir courir les routes et d'être seul comme un moineau sous la pluie. - Les Temps Modernes (1936)",
-    "L'Égypte, c'est un pays de contrastes. D'un côté, vous avez la ville, et de l'autre, le désert. Un peu comme Paris et Marne-la-Vallée. - OSS 117 : Le Caire, nid d'espions (2006)"
-    "La première règle du Fight Club est : il est interdit de parler du Fight Club. La seconde règle du Fight Club est : il est interdit de parler du Fight Club. - Fight Club (1999)"
-    "Maintenant, si ça ne vous dérange pas, je vais me coucher, avant que l'un de vous ait encore une brillante idée pour nous faire tuer…ou pire, nous faire expulser ! - Harry Potter à l'école des sorciers (2001)"
-    "C’est à moi que tu parles ? C’est à moi que tu parles ??... - Taxi Driver (1976)"
-    "La différence entre toi et moi, c’est que moi j’ai la classe - Men in Black (1997)"
-    "J’adore l’odeur du napalm au petit matin. - Apocalypse Now (1979)"
-    "Le coup le plus rusé que le diable ait jamais réussi, c’est de faire croire à tout le monde qu’il n’existait pas. - Usual Suspect (1995)"
-    "- C’est bon on peut les avoir. - Ils sont très loin. - Lancez-moi. - Pardon ? - Je ne peux pas sauter aussi loin alors lancez-moi ! - Entendu. - Eh, heu le dites pas à l’Elfe, hein? - Pas un mot. - Le Seigneur des anneaux : Les Deux Tours (2002)"
-    "Pas de bras, pas de chocolat - Intouchable (2011)"
-    "Balance man... Cadence man... Trace la glace c'est le Coooool Rasta ! - Rasta Rockett (1993)"
-    "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres. Des gens qui m’ont tendu la main, peut-être à un moment où je ne pouvais pas, où j’étais seul chez moi. Et c’est assez curieux de se dire que les hasards, les rencontres forgent une destinée... Parce que quand on a le goût de la chose, quand on a le goût de la chose bien faite, le beau geste, parfois on ne trouve pas l’interlocuteur en face je dirais, le miroir qui vous aide à avancer. Alors ça n’est pas mon cas, comme je disais là, puisque moi au contraire, j’ai pu ; et je dis merci à la vie, je lui dis merci, je chante la vie, je danse la vie... je ne suis qu’amour ! Et finalement, quand des gens me disent « Mais comment fais-tu pour avoir cette humanité ? », je leur réponds très simplement que c’est ce goût de l’amour, ce goût donc qui m’a poussé aujourd’hui à entreprendre une construction mécanique... mais demain qui sait ? Peut-être simplement à me mettre au service de la communauté, à faire le don, le don de soi. - Astérix et Obélix : Mission Cléopâtre (2002)"
-]
+# citations_films = [
+#     "Que la Force soit avec toi. - Star Wars (1977)",
+#     "On se reverra toujours à Casablanca. - Casablanca (1942)",
+#     "J'ai besoin de la vitesse. - Top Gun (1986)",
+#     "La vie, c'est comme une boîte de chocolats ; on ne sait jamais sur quoi on va tomber. - Forrest Gump (1994)",
+#     "Je reviendrai. - Terminator (1984)",
+#     "Vers l'infini et au-delà ! - Toy Story (1995)",
+#     "Voici Johnny ! - Shining (1980)",
+#     "Je suis le roi du monde ! - Titanic (1997)",
+#     "Pourquoi cet air si sérieux ? - The Dark Knight (2008)",
+#     "La peur est le chemin vers le côté obscur. - Star Wars: Épisode I - La Menace Fantôme (1999)",
+#     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
+#     "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
+#     "Moi, j'ai pas d'amis. - Amélie Poulain (2001)",
+#     "On n'est pas chez Mémé ici. - La Grande Vadrouille (1966)",
+#     "Je suis Spartacus ! - Spartacus (1960)",
+#     "T'as de beaux yeux, tu sais. - Le Quai des Brumes (1938)",
+#     "Je veux être seul. - L'As de Pique (1932)",
+#     "Écoutez-moi bien, Monsieur. - Le Dictateur (1940)",
+#     "Je suis ce que je suis. - Les Enfants du Paradis (1945)",
+#     "C'est un truc de fou. - Les Tontons Flingueurs (1963)",
+#     "La classe américaine, c'est nous. - La Classe Américaine (1993)",
+#     "Elle est où la poulette ? - Le Père Noël est une ordure (1982)",
+#     "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
+#     "La morale, c'est comme la confiture, moins on en a, plus on l'étale. - Les Valseuses (1974)",
+#     "Vous n'avez rien compris à rien. - Hiroshima mon amour (1959)",
+#     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
+#     "Je suis un homme, je ne peux pas me passer de femmes. - La Cité de la Peur (1994)",
+#     "Quand on mettra les cons sur orbite, t'as pas fini de tourner. - Michel Audiard",
+#     "C'est l'histoire d'un homme qui tombe d'un immeuble de 50 étages. Le mec, au fur et à mesure de sa chute, il se répète sans cesse pour se rassurer : jusqu'ici tout va bien, jusqu'ici tout va bien, jusqu'ici tout va bien. - La Haine (1995)",
+#     "Si tu es gêné par le bruit des autres, apprends à ne pas être gêné par ta propre respiration. - Amélie Poulain (2001)",
+#     "Il vaut mieux mobiliser son intelligence sur des conneries que mobiliser sa connerie sur des choses intelligentes. - Les Tontons Flingueurs (1963)",
+#     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
+#     "C'est un roc ! C'est un pic ! C'est un cap ! Que dis-je, c'est un cap ? C'est une péninsule ! - Cyrano de Bergerac (1990)",
+#     "On ne devrait jamais quitter Montauban. - L'Armée des Ombres (1969)",
+#     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
+#     "Je suis fatigué patron, fatigué de devoir courir les routes et d'être seul comme un moineau sous la pluie. - Les Temps Modernes (1936)",
+#     "L'Égypte, c'est un pays de contrastes. D'un côté, vous avez la ville, et de l'autre, le désert. Un peu comme Paris et Marne-la-Vallée. - OSS 117 : Le Caire, nid d'espions (2006)"
+#     "La première règle du Fight Club est : il est interdit de parler du Fight Club. La seconde règle du Fight Club est : il est interdit de parler du Fight Club. - Fight Club (1999)"
+#     "Maintenant, si ça ne vous dérange pas, je vais me coucher, avant que l'un de vous ait encore une brillante idée pour nous faire tuer…ou pire, nous faire expulser ! - Harry Potter à l'école des sorciers (2001)"
+#     "C’est à moi que tu parles ? C’est à moi que tu parles ??... - Taxi Driver (1976)"
+#     "La différence entre toi et moi, c’est que moi j’ai la classe - Men in Black (1997)"
+#     "J’adore l’odeur du napalm au petit matin. - Apocalypse Now (1979)"
+#     "Le coup le plus rusé que le diable ait jamais réussi, c’est de faire croire à tout le monde qu’il n’existait pas. - Usual Suspect (1995)"
+#     "- C’est bon on peut les avoir. - Ils sont très loin. - Lancez-moi. - Pardon ? - Je ne peux pas sauter aussi loin alors lancez-moi ! - Entendu. - Eh, heu le dites pas à l’Elfe, hein? - Pas un mot. - Le Seigneur des anneaux : Les Deux Tours (2002)"
+#     "Pas de bras, pas de chocolat - Intouchable (2011)"
+#     "Balance man... Cadence man... Trace la glace c'est le Coooool Rasta ! - Rasta Rockett (1993)"
+#     "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres. Des gens qui m’ont tendu la main, peut-être à un moment où je ne pouvais pas, où j’étais seul chez moi. Et c’est assez curieux de se dire que les hasards, les rencontres forgent une destinée... Parce que quand on a le goût de la chose, quand on a le goût de la chose bien faite, le beau geste, parfois on ne trouve pas l’interlocuteur en face je dirais, le miroir qui vous aide à avancer. Alors ça n’est pas mon cas, comme je disais là, puisque moi au contraire, j’ai pu ; et je dis merci à la vie, je lui dis merci, je chante la vie, je danse la vie... je ne suis qu’amour ! Et finalement, quand des gens me disent « Mais comment fais-tu pour avoir cette humanité ? », je leur réponds très simplement que c’est ce goût de l’amour, ce goût donc qui m’a poussé aujourd’hui à entreprendre une construction mécanique... mais demain qui sait ? Peut-être simplement à me mettre au service de la communauté, à faire le don, le don de soi. - Astérix et Obélix : Mission Cléopâtre (2002)"
+# ]
 
 phrase_chargement = [
     "Plongée dans la matrice en cours",
@@ -83,7 +92,7 @@ phrase_chargement = [
     "Chargement dans l'espace-temps, façon Retour vers le Futur.",
     "Élaboration de votre Truman Show personnel",
     "Tentative d'éviter l'iceberg droit devant !",
-    "Saut dans l'hyperespace cinéphile",
+    "Saut dans l'hyper espace cinéphile",
     "Auto-destruction de l'écran de chargement en cours...",
     "Préparation de votre rêve partagé",
     "Ouverture d'une brèche dans votre chargement à coup de hache",
@@ -103,14 +112,27 @@ citation_aleatoire = random.choice(phrase_chargement)
 with st.spinner(citation_aleatoire):
     time.sleep(5)
 
-projet = st.button('PROJET 2')
+image_path = "C:/Users/costi/Documents/Github/Project2/image/Clap.png"
+image = Image.open(image_path)
+st.sidebar.image(image, use_column_width=True)
+
+# # Chargement de l'image
+# image_path = "C:/Users/costi/Documents/Github/Project2/image/dollar.png"
+# image = st.sidebar.image(image_path, caption='Ma Super Image', use_column_width=True)
+
+# Autres éléments dans la barre latérale
+st.sidebar.title("PROJET")
 
 #Options Menu
 with st.sidebar:
-    selected = option_menu(projet, ["Présentation", 'Recommendation','Le petit +'],
+    selected = option_menu('Menu', ["Mode d'emploi", 'Recommendation','Le petit +'],
     icons=['play-btn','search','info-circle'], menu_icon='intersect', default_index=0)
 
-if selected=="Présentation":
+with st.sidebar:
+    # Ajout d'une icône avec Font Awesome
+    nanar = st.write(":reverse: **Mon Application**")
+
+if selected=="Mode d'emploi":
     #Header
     st.title("**Le mode d'emploi :**")
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Inédit !")
@@ -126,7 +148,7 @@ if selected=="Présentation":
     st.write("**Explorez, Découvrez, Appréciez**")
     st.write("Bienvenue dans une expérience de recommandation de films qui va au-delà des sentiers battus. Attachez-vous, car chaque recommandation promet une évasion cinématographique inoubliable.")
     st.write("**Encore là ?**")
-    st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile ! Parcourez nos onglets et vous pourrez profitez d'une option parfaite pour voir les meilleurs du pires du cinéma !")
+    st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile ! Parcourez nos onglets et vous pourrez profitez d'une option parfaite pour voir le meilleur... du pire !!!")
 
 
 if selected=="Recommendation":
@@ -142,7 +164,119 @@ if selected=="Recommendation":
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
 
     # # Filtrer par d'autres conditions
-    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", citations_films)
+    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", phrase_chargement)
+
+    #Test Algo
+    def get_top_values(column, top_n=None):
+    # Utilisation de la fonction explode pour déplier les listes de genres
+    exploded_genres = column.explode()
+
+    # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
+    genre_counts = Counter(exploded_genres)
+
+    # Supprimer les occurrences de chaînes de caractères vides
+    genre_counts = {key: value for key, value in genre_counts.items() if key and not pd.isna(key)}
+
+    # Tri des genres par ordre décroissant de fréquence
+    sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+
+    # Si top_n est spécifié, limiter aux N premiers genres
+    if top_n is not None:
+        sorted_genres = sorted_genres[:top_n]
+
+    # Renvoyer une liste des genres les plus représentés sans apostrophes et sans chaînes de caractères vides
+    top_genres = [genre for genre, count in sorted_genres if genre]
+
+    return top_genres
+
+    def count_occurrences(column, top_n=None):
+        # Utilisation de la fonction explode pour déplier les listes de genres
+        exploded_genres = column.explode()
+
+        # Filtrer les éléments de la colonne qui ne sont ni vides ni NaN
+        cleaned_genres = [item for item in exploded_genres if item and not pd.isna(item)]
+
+        # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
+        genre_counts = Counter(cleaned_genres)
+
+        # Tri des genres par ordre décroissant de fréquence
+        sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+
+        # Si top_n est spécifié, limiter aux N premiers genres
+        if top_n is not None:
+            sorted_genres = sorted_genres[:top_n]
+
+        # Créer un dictionnaire contenant les genres et leurs occurrences
+        result = {genre: count for genre, count in sorted_genres}
+
+        return result
+
+    def count_occurrences_old(column, top_n=None):
+        # Utilisation de la fonction explode pour déplier les listes de genres
+        exploded_genres = column.explode()
+
+        # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
+        genre_counts = Counter(exploded_genres)
+
+        # Tri des genres par ordre décroissant de fréquence
+        sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+
+        # Si top_n est spécifié, limiter aux N premiers genres
+        if top_n is not None:
+            sorted_genres = sorted_genres[:top_n]
+
+        # Affichage du résultat avec un saut de ligne après chaque genre
+        for genre, count in sorted_genres:
+            print(genre, count)
+
+
+    from collections import Counter
+
+
+
+    def clean_and_count_genres(column, top_n=None):
+        # Définir une fonction pour nettoyer chaque élément de la colonne
+        def clean_genre(x):
+            try:
+                # Utiliser literal_eval pour convertir la chaîne en liste
+                return literal_eval(x)
+            except (ValueError, SyntaxError):
+                # En cas d'erreur, renvoyer une liste vide
+                return []
+
+        # Remplacer les valeurs NaN par une liste vide
+        df_complet[column] = df_complet[column].fillna('').apply(clean_genre)
+
+        # Utilisation de la fonction explode pour déplier les listes de genres
+        exploded_genres = df_complet[column].explode()
+
+        # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
+        genre_counts = Counter(exploded_genres)
+
+        # Trie des genres par ordre décroissant de fréquence
+        sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+
+        # Affichage des N premiers genres
+        if top_n is not None:
+            sorted_genres = sorted_genres[:top_n]
+
+        # Affichage du résultat
+        unique_genres = [genre for genre, count in sorted_genres]
+        #print("Genres uniques:", unique_genres)
+        #print("Occurrences:", genre_counts)
+
+    def is_nan_string(s):
+        try:
+            # Convertir la chaîne en un nombre à virgule flottante
+            num = float(s)
+            # Vérifier si le nombre est NaN
+            return math.isnan(num)
+        except ValueError:
+            # Si la conversion échoue, la chaîne n'est pas un nombre
+            return False
+
+    pd.set_option('display.max_columns', None)
+    init=False
 
 if selected=="Le petit +":
     #Header
