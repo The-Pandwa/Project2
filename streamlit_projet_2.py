@@ -26,83 +26,36 @@ from sklearn.preprocessing import StandardScaler
 from ast import literal_eval
 from datetime import datetime
 from PIL import Image
+from fuzzywuzzy import fuzz
+import nltk
+nltk.download('popular')
 
 # Import dataset
 df_ML = pd.read_csv('movie_beforeML.csv')
     
 #Configuration de la page
 st.set_page_config(
-    page_title="Projet2xCBC",
+    page_title="Creus-é-Moi",
     layout="wide",
     initial_sidebar_state="collapsed")
 
-# citations_films = [
-#     "Que la Force soit avec toi. - Star Wars (1977)",
-#     "On se reverra toujours à Casablanca. - Casablanca (1942)",
-#     "J'ai besoin de la vitesse. - Top Gun (1986)",
-#     "La vie, c'est comme une boîte de chocolats ; on ne sait jamais sur quoi on va tomber. - Forrest Gump (1994)",
-#     "Je reviendrai. - Terminator (1984)",
-#     "Vers l'infini et au-delà ! - Toy Story (1995)",
-#     "Voici Johnny ! - Shining (1980)",
-#     "Je suis le roi du monde ! - Titanic (1997)",
-#     "Pourquoi cet air si sérieux ? - The Dark Knight (2008)",
-#     "La peur est le chemin vers le côté obscur. - Star Wars: Épisode I - La Menace Fantôme (1999)",
-#     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
-#     "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
-#     "Moi, j'ai pas d'amis. - Amélie Poulain (2001)",
-#     "On n'est pas chez Mémé ici. - La Grande Vadrouille (1966)",
-#     "Je suis Spartacus ! - Spartacus (1960)",
-#     "T'as de beaux yeux, tu sais. - Le Quai des Brumes (1938)",
-#     "Je veux être seul. - L'As de Pique (1932)",
-#     "Écoutez-moi bien, Monsieur. - Le Dictateur (1940)",
-#     "Je suis ce que je suis. - Les Enfants du Paradis (1945)",
-#     "C'est un truc de fou. - Les Tontons Flingueurs (1963)",
-#     "La classe américaine, c'est nous. - La Classe Américaine (1993)",
-#     "Elle est où la poulette ? - Le Père Noël est une ordure (1982)",
-#     "Ils ont les armes, on les emmerde. - Le Cinquième Élément (1997)",
-#     "La morale, c'est comme la confiture, moins on en a, plus on l'étale. - Les Valseuses (1974)",
-#     "Vous n'avez rien compris à rien. - Hiroshima mon amour (1959)",
-#     "Un peu d'arc-en-ciel suffit à éclairer tout un ciel. - Les Choristes (2004)",
-#     "Je suis un homme, je ne peux pas me passer de femmes. - La Cité de la Peur (1994)",
-#     "Quand on mettra les cons sur orbite, t'as pas fini de tourner. - Michel Audiard",
-#     "C'est l'histoire d'un homme qui tombe d'un immeuble de 50 étages. Le mec, au fur et à mesure de sa chute, il se répète sans cesse pour se rassurer : jusqu'ici tout va bien, jusqu'ici tout va bien, jusqu'ici tout va bien. - La Haine (1995)",
-#     "Si tu es gêné par le bruit des autres, apprends à ne pas être gêné par ta propre respiration. - Amélie Poulain (2001)",
-#     "Il vaut mieux mobiliser son intelligence sur des conneries que mobiliser sa connerie sur des choses intelligentes. - Les Tontons Flingueurs (1963)",
-#     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
-#     "C'est un roc ! C'est un pic ! C'est un cap ! Que dis-je, c'est un cap ? C'est une péninsule ! - Cyrano de Bergerac (1990)",
-#     "On ne devrait jamais quitter Montauban. - L'Armée des Ombres (1969)",
-#     "Les cons, ça ose tout. C'est même à ça qu'on les reconnaît. - Les Tontons Flingueurs (1963)",
-#     "Je suis fatigué patron, fatigué de devoir courir les routes et d'être seul comme un moineau sous la pluie. - Les Temps Modernes (1936)",
-#     "L'Égypte, c'est un pays de contrastes. D'un côté, vous avez la ville, et de l'autre, le désert. Un peu comme Paris et Marne-la-Vallée. - OSS 117 : Le Caire, nid d'espions (2006)"
-#     "La première règle du Fight Club est : il est interdit de parler du Fight Club. La seconde règle du Fight Club est : il est interdit de parler du Fight Club. - Fight Club (1999)"
-#     "Maintenant, si ça ne vous dérange pas, je vais me coucher, avant que l'un de vous ait encore une brillante idée pour nous faire tuer…ou pire, nous faire expulser ! - Harry Potter à l'école des sorciers (2001)"
-#     "C’est à moi que tu parles ? C’est à moi que tu parles ??... - Taxi Driver (1976)"
-#     "La différence entre toi et moi, c’est que moi j’ai la classe - Men in Black (1997)"
-#     "J’adore l’odeur du napalm au petit matin. - Apocalypse Now (1979)"
-#     "Le coup le plus rusé que le diable ait jamais réussi, c’est de faire croire à tout le monde qu’il n’existait pas. - Usual Suspect (1995)"
-#     "- C’est bon on peut les avoir. - Ils sont très loin. - Lancez-moi. - Pardon ? - Je ne peux pas sauter aussi loin alors lancez-moi ! - Entendu. - Eh, heu le dites pas à l’Elfe, hein? - Pas un mot. - Le Seigneur des anneaux : Les Deux Tours (2002)"
-#     "Pas de bras, pas de chocolat - Intouchable (2011)"
-#     "Balance man... Cadence man... Trace la glace c'est le Coooool Rasta ! - Rasta Rockett (1993)"
-#     "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres. Des gens qui m’ont tendu la main, peut-être à un moment où je ne pouvais pas, où j’étais seul chez moi. Et c’est assez curieux de se dire que les hasards, les rencontres forgent une destinée... Parce que quand on a le goût de la chose, quand on a le goût de la chose bien faite, le beau geste, parfois on ne trouve pas l’interlocuteur en face je dirais, le miroir qui vous aide à avancer. Alors ça n’est pas mon cas, comme je disais là, puisque moi au contraire, j’ai pu ; et je dis merci à la vie, je lui dis merci, je chante la vie, je danse la vie... je ne suis qu’amour ! Et finalement, quand des gens me disent « Mais comment fais-tu pour avoir cette humanité ? », je leur réponds très simplement que c’est ce goût de l’amour, ce goût donc qui m’a poussé aujourd’hui à entreprendre une construction mécanique... mais demain qui sait ? Peut-être simplement à me mettre au service de la communauté, à faire le don, le don de soi. - Astérix et Obélix : Mission Cléopâtre (2002)"
-# ]
-
 phrase_chargement = [
-    "Plongée dans la matrice en cours",
-    "En attente de l'arrivée des dinosaures",
-    "Chargement dans l'espace-temps, façon Retour vers le Futur.",
+    "Immersion au coeur de la matrice en cours",
+    "Chargement datant de l'âge du Jurassic",
+    "En route vers les 88mph, pour un résultat qui décoiffe !",
     "Élaboration de votre Truman Show personnel",
     "Tentative d'éviter l'iceberg droit devant !",
     "Saut dans l'hyper espace cinéphile",
     "Auto-destruction de l'écran de chargement en cours...",
-    "Préparation de votre rêve partagé",
+    "Saut dans votre rêve partagé imminent",
     "Ouverture d'une brèche dans votre chargement à coup de hache",
-    "Je suis un écran, un écran de chargement ",
+    "Je suis un écran, un écran de chargement",
     "Déchiffrement du Da Vinci Code en cours...",
-    "Recrutement de nouveau Avengers en cours ",
-    "Concoction de votre potion cinématographique en cours.",
+    "Recrutement des nouveaux Avengers en cours ",
+    "Concoction de votre potion de métamorphose cinématographique en cours.",
     "Création de la communauté des cinéphiles",
     "Envolé de l'écran de chargement à vélo",
-    "Voyage vers l'inconnu  et l'au delà cinématographique !",
+    "Voyage vers l'inconnu et l'au delà cinématographique !",
     "Exposition à la kryptonite en cours"
 ]
 
@@ -116,12 +69,8 @@ image_path = "C:/Users/costi/Documents/Github/Project2/image/Clap.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
-# # Chargement de l'image
-# image_path = "C:/Users/costi/Documents/Github/Project2/image/dollar.png"
-# image = st.sidebar.image(image_path, caption='Ma Super Image', use_column_width=True)
-
 # Autres éléments dans la barre latérale
-st.sidebar.title("PROJET")
+st.sidebar.title("Creus-é-Moi")
 
 #Options Menu
 with st.sidebar:
@@ -130,10 +79,9 @@ with st.sidebar:
 
 with st.sidebar:
     # Ajout d'une icône avec Font Awesome
-    nanar = st.write(":reverse: **Mon Application**")
+    nanar = st.write(":rocket:")
 
 if selected=="Mode d'emploi":
-    #Header
     st.title("**Le mode d'emploi :**")
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Inédit !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
@@ -150,11 +98,9 @@ if selected=="Mode d'emploi":
     st.write("**Encore là ?**")
     st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile ! Parcourez nos onglets et vous pourrez profitez d'une option parfaite pour voir le meilleur... du pire !!!")
 
-
 if selected=="Recommendation":
     #Header
     st.title("Voici pour vous, nos suggestions d'après vos critères")
-    st.subheader('Find your perfect film !')
 
     st.divider()
     # Création de la sidebar et features
@@ -163,31 +109,28 @@ if selected=="Recommendation":
     # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
     selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
 
-    # # Filtrer par d'autres conditions
-    selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", phrase_chargement)
-
-    #Test Algo
+        #Test Algo
     def get_top_values(column, top_n=None):
-    # Utilisation de la fonction explode pour déplier les listes de genres
-    exploded_genres = column.explode()
+        # Utilisation de la fonction explode pour déplier les listes de genres
+        exploded_genres = column.explode()
 
-    # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
-    genre_counts = Counter(exploded_genres)
+        # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
+        genre_counts = Counter(exploded_genres)
 
-    # Supprimer les occurrences de chaînes de caractères vides
-    genre_counts = {key: value for key, value in genre_counts.items() if key and not pd.isna(key)}
+        # Supprimer les occurrences de chaînes de caractères vides
+        genre_counts = {key: value for key, value in genre_counts.items() if key and not pd.isna(key)}
 
-    # Tri des genres par ordre décroissant de fréquence
-    sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
+        # Tri des genres par ordre décroissant de fréquence
+        sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
 
-    # Si top_n est spécifié, limiter aux N premiers genres
-    if top_n is not None:
-        sorted_genres = sorted_genres[:top_n]
+        # Si top_n est spécifié, limiter aux N premiers genres
+        if top_n is not None:
+            sorted_genres = sorted_genres[:top_n]
 
-    # Renvoyer une liste des genres les plus représentés sans apostrophes et sans chaînes de caractères vides
-    top_genres = [genre for genre, count in sorted_genres if genre]
+        # Renvoyer une liste des genres les plus représentés sans apostrophes et sans chaînes de caractères vides
+        top_genres = [genre for genre, count in sorted_genres if genre]
 
-    return top_genres
+        return top_genres
 
     def count_occurrences(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
@@ -229,10 +172,7 @@ if selected=="Recommendation":
         for genre, count in sorted_genres:
             print(genre, count)
 
-
     from collections import Counter
-
-
 
     def clean_and_count_genres(column, top_n=None):
         # Définir une fonction pour nettoyer chaque élément de la colonne
@@ -262,8 +202,6 @@ if selected=="Recommendation":
 
         # Affichage du résultat
         unique_genres = [genre for genre, count in sorted_genres]
-        #print("Genres uniques:", unique_genres)
-        #print("Occurrences:", genre_counts)
 
     def is_nan_string(s):
         try:
@@ -275,8 +213,286 @@ if selected=="Recommendation":
             # Si la conversion échoue, la chaîne n'est pas un nombre
             return False
 
+    def get_episodes(index_movie, df_titre):
+        # Définir deux phrases
+        liste_episodes=[]
+        df_aglo = df_titre.copy()[0:0]
+        phrase1 = df_reco.loc[index_movie, 'french_title']
+        mots_phrase1 = phrase1.lower().split()
+        tokens_phrase1 = []
+        for words in mots_phrase1:
+            if words not in nltk.corpus.stopwords.words("french") and words not in nltk.corpus.stopwords.words("english"):
+                tokens_phrase1.append(words)
+
+        for titre in df_titre.iloc[1:]['french_title']:
+            phrase2=titre
+            mots_phrase2 = phrase2.lower().split()
+            tokens_phrase2 = []
+            for words in mots_phrase2:
+                if words not in nltk.corpus.stopwords.words("french") and words not in nltk.corpus.stopwords.words("english"):
+                    tokens_phrase2.append(words)
+            pourcentage_mots_communs = fuzz.token_set_ratio(tokens_phrase1, tokens_phrase2)
+            if pourcentage_mots_communs>=55:
+                print("Pour le film:",titre, "Pourcentage de mots communs :", pourcentage_mots_communs, "donc je pense que c'est une suite")
+                df_aglo = pd.concat([df_aglo, df_titre.loc[df_titre['french_title'] == titre]])
+                #df_titre.loc[df_titre['french_title']==titre]
+        return(df_aglo)
+
+    def flatten_list(lst):
+        """Fonction récursive pour aplatir une liste."""
+        flattened_lst = []
+        for item in lst:
+            if isinstance(item, list):
+                flattened_lst.extend(flatten_list(item))
+            elif isinstance(item, str) and item.startswith('[') and item.endswith(']'):
+                # Si l'élément ressemble à une liste mais est une chaîne de caractères,
+                # nous le traitons comme une liste en le découpant et en séparant les éléments.
+                items_inside = item[1:-1].split(', ')
+                flattened_lst.extend(items_inside)
+            else:
+                flattened_lst.append(item)
+        return flattened_lst
     pd.set_option('display.max_columns', None)
     init=False
+
+    id ='tt0241527'
+
+    if init == False:
+        print("init")
+        df_complet= df_ML
+        df_complet = df_complet.dropna(subset=['release_date'])
+        df_complet = df_complet.reset_index(drop=True)
+        df_complet['release_date'] = pd.to_datetime(df_complet['release_date'])
+        clean_and_count_genres('production_countries', top_n=100000)
+        clean_and_count_genres('production_companies_name', top_n=100000)
+        clean_and_count_genres('actors', top_n=100000)
+        clean_and_count_genres('actresses', top_n=100000)
+        clean_and_count_genres('directors', top_n=100000)
+        clean_and_count_genres('composers', top_n=100000)
+        clean_and_count_genres('writers', top_n=100000)
+        clean_and_count_genres('producers', top_n=100000)
+        clean_and_count_genres('other_crew', top_n=100000)
+        df_reco = df_complet.copy()
+        index_movie = df_reco.loc[df_reco['imdb_id']== id].index[0]
+        df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
+        release_years_unique = df_reco['release_year'].astype(str).unique().tolist()
+        genres_unique = df_reco['genres'].astype(str).unique().tolist()
+        genres_unique = flatten_list(genres_unique)
+        genres_unique = [genre.strip("'") for genre in genres_unique]
+        genres_unique = list(set(genres_unique))
+        genres_unique = [element for element in genres_unique if element != '']
+        production_countries_unique = df_reco['production_countries'].astype(str).unique().tolist()
+        production_countries_unique = flatten_list(production_countries_unique)
+        production_countries_unique = [genre.strip("'") for genre in production_countries_unique]
+        production_countries_unique = list(set(production_countries_unique))
+        production_countries_unique = [element for element in production_countries_unique if element != '']
+        production_companies_name_unique = df_reco['production_companies_name'].astype(str).unique().tolist()
+        production_companies_name_unique = flatten_list(production_companies_name_unique)
+        production_companies_name_unique = [genre.strip("'") for genre in production_companies_name_unique]
+        production_companies_name_unique = list(set(production_companies_name_unique))
+        production_companies_name_unique = [element for element in production_companies_name_unique if element != '']
+        french_title_unique = df_reco['french_title'].astype(str).unique().tolist()
+        actors_unique = df_reco['actors'].astype(str).unique().tolist()
+        actors_unique = flatten_list(actors_unique)
+        actors_unique = [genre.strip("'") for genre in actors_unique]
+        actors_unique = list(set(actors_unique))
+        actors_unique = [element for element in actors_unique if element != '']
+        actresses_unique = df_reco['actresses'].astype(str).unique().tolist()
+        actresses_unique = flatten_list(actresses_unique)
+        actresses_unique = [genre.strip("'") for genre in actresses_unique]
+        actresses_unique = list(set(actresses_unique))
+        actresses_unique = [element for element in actresses_unique if element != '']
+        directors_unique = df_reco['directors'].astype(str).unique().tolist()
+        directors_unique = flatten_list(directors_unique)
+        directors_unique = [genre.strip("'") for genre in directors_unique]
+        directors_unique = list(set(directors_unique))
+        directors_unique = [element for element in directors_unique if element != '']
+        composers_unique = df_reco['composers'].astype(str).unique().tolist()
+        composers_unique = flatten_list(composers_unique)
+        composers_unique = [genre.strip("'") for genre in composers_unique]
+        composers_unique = list(set(composers_unique))
+        composers_unique = [element for element in composers_unique if element != '']
+        writers_unique = df_reco['writers'].astype(str).unique().tolist()
+        writers_unique = flatten_list(composers_unique)
+        writers_unique = [genre.strip("'") for genre in composers_unique]
+        writers_unique = list(set(composers_unique))
+        writers_unique = [element for element in composers_unique if element != '']
+        producers_unique = df_reco['producers'].astype(str).unique().tolist()
+        producers_unique = flatten_list(producers_unique)
+        producers_unique = [genre.strip("'") for genre in producers_unique]
+        producers_unique = list(set(producers_unique))
+        producers_unique = [element for element in producers_unique if element != '']
+        other_crew_unique = df_reco['other_crew'].astype(str).unique().tolist()
+        other_crew_unique = flatten_list(other_crew_unique)
+        other_crew_unique = [genre.strip("'") for genre in other_crew_unique]
+        other_crew_unique = list(set(other_crew_unique))
+        other_crew_unique = [element for element in other_crew_unique if element != '']
+        all_tags_unique = release_years_unique + genres_unique + production_countries_unique + production_companies_name_unique + french_title_unique + actors_unique + actresses_unique + directors_unique + composers_unique + writers_unique + producers_unique + other_crew_unique
+        list_unique = [release_years_unique,genres_unique,production_countries_unique,production_companies_name_unique,french_title_unique,actors_unique,actresses_unique,directors_unique,composers_unique,writers_unique,producers_unique,other_crew_unique]
+        init = True
+
+    df_reco = df_complet.copy()
+    index_movie = df_reco.loc[df_reco['imdb_id']== id].index[0]
+
+    #Conversion release_date
+    df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
+
+    genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
+    #index_movie = df_complet.loc[df_complet['french_title']== titre].index[0]
+
+    #Partie genres
+    df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
+    for genre in genres_premiere_ligne:
+        df_dummies_genres[genre] = df_reco['genres'].apply(lambda x: genre in eval(x)).astype(int)
+        #df_dummies_genres[genre]*=200
+    df_reco = pd.concat([df_reco, df_dummies_genres], axis=1)
+
+    #Partie production_countries
+    production_countries_premiere_ligne = df_reco.iloc[index_movie]['production_countries']
+    df_dummies_actors = pd.DataFrame(columns=production_countries_premiere_ligne)
+    for actor in production_countries_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['production_countries'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #production_companies_name
+    actors_premiere_ligne = df_reco.iloc[index_movie]['production_companies_name']
+    df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
+    for actor in actors_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['production_companies_name'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie actors
+    actors_premiere_ligne = df_reco.iloc[index_movie]['actors']
+    df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
+    for actor in actors_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['actors'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie actresses
+    actress_premiere_ligne = df_reco.iloc[index_movie]['actresses']
+    df_dummies_actors = pd.DataFrame(columns=actress_premiere_ligne)
+    for actor in actress_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['actresses'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie directors
+    directors_premiere_ligne = df_reco.iloc[index_movie]['directors']
+    df_dummies_actors = pd.DataFrame(columns=directors_premiere_ligne)
+    for actor in directors_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['directors'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie composers
+    composer_premiere_ligne = df_reco.iloc[index_movie]['composers']
+    df_dummies_actors = pd.DataFrame(columns=composer_premiere_ligne)
+    for actor in composer_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['composers'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie writers
+    writers_premiere_ligne = df_reco.iloc[index_movie]['writers']
+    df_dummies_actors = pd.DataFrame(columns=writers_premiere_ligne)
+    for actor in writers_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['writers'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie producers
+    producers_premiere_ligne = df_reco.iloc[index_movie]['producers']
+    df_dummies_actors = pd.DataFrame(columns=producers_premiere_ligne)
+    for actor in producers_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['producers'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    #Partie other_crew
+    other_crew_premiere_ligne = df_reco.iloc[index_movie]['other_crew']
+    df_dummies_actors = pd.DataFrame(columns=other_crew_premiere_ligne)
+    for actor in other_crew_premiere_ligne:
+        df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
+    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
+    # Normaliser les caractéristiques
+    scaler = StandardScaler()
+    X = df_reco.select_dtypes(include='number')
+    X_scaled = scaler.fit_transform(X)
+    y = df_reco['french_title']
+
+    # Entraîner le modèle KNeighborsClassifier
+    model = KNeighborsClassifier(n_neighbors=100, weights='uniform')
+    model.fit(X_scaled, y)
+
+    # Créer un DataFrame pour stocker les recommandations et les distances
+    distances, recommandation = model.kneighbors([X_scaled[index_movie, :]])
+
+    # Créer un DataFrame pour stocker les recommandations et les distances
+    df_reco_with_distance = df_reco.iloc[recommandation[0]].copy()
+    df_reco_with_distance['Distance'] = distances[0]
+    df_titre = df_reco_with_distance
+
+    df_titre = df_titre.reset_index(drop=True)
+    df_target = df_titre.head(1)
+
+    #On cherche les suites
+    df_aglo = get_episodes(index_movie,df_titre)
+    df_titre = df_titre.drop(df_aglo.index, axis=0)
+    df_titre = df_titre.iloc[1:]
+    print("Les suites", df_aglo['french_title'])
+    #On cherche les films avec les genres les plus proches
+    df_titre = df_titre.sort_values(by=genres_premiere_ligne, ascending=False)
+    df_aglo = pd.concat([df_aglo, df_titre.head(3)])
+    df_titre = df_titre.iloc[3:]
+    print("Les genres proches", df_aglo['french_title'])
+    popularite_target = float(df_target["popularite_ponderee"])
+    original_popularite_target = float(df_target["popularite_ponderee"])
+    if popularite_target > 6:
+        popularite_target = float(df_target["popularite_ponderee"]-1.5)
+    if popularite_target > 6.5:
+        popularite_target = float(df_target["popularite_ponderee"]-2)
+    if popularite_target > 7:
+        popularite_target = float(df_target["popularite_ponderee"]-2.5)
+    if popularite_target > 7.5:
+        popularite_target = float(df_target["popularite_ponderee"]-3)
+    if popularite_target > 8:
+        popularite_target = float(df_target["popularite_ponderee"]-3.5)
+    if popularite_target > 8.5:
+        popularite_target = float(df_target["popularite_ponderee"]-4)
+    if popularite_target > 9:
+        popularite_target = float(df_target["popularite_ponderee"]-4.5)
+
+    # Filtrer les lignes de df_titre en utilisant la méthode query
+    df_titre = df_titre.query("popularite_ponderee > @popularite_target")
+    df_titre = df_titre.reset_index(drop=True)
+
+    #On cherche les meilleurs films dans les plus proches
+    df_titre = df_titre.sort_values(by=['popularite_ponderee'], ascending=False)
+    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    df_titre = df_titre.iloc[2:]
+    print("Les meilleurs films proches",df_aglo['french_title'])
+    #On cherche les films avec les acteurs les plus proches
+    df_titre =  df_titre.sort_values(by=actors_premiere_ligne + ['Distance'], ascending=[False]*len(actors_premiere_ligne) + [False])
+    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    df_titre = df_titre.iloc[2:]
+    print("Les memes acteurs", df_aglo['french_title'])
+    #On cherche les films avec les actrices les plus proches, s'il yen a
+    if actress_premiere_ligne != '':
+        df_titre =  df_titre.sort_values(by=actress_premiere_ligne + ['Distance'], ascending=[False]*len(actress_premiere_ligne) + [False])
+        df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+        df_titre = df_titre.iloc[2:]
+    print("Les memes actrices", df_aglo['french_title'])
+    #On cherche les films avec les réalisateurs les plus proches
+    df_titre =  df_titre.sort_values(by=directors_premiere_ligne + ['Distance'], ascending=[False]*len(directors_premiere_ligne) + [False])
+    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    df_titre = df_titre.iloc[2:]
+    print("Les memes real",df_aglo['french_title'])
+    #On cherche les films direct les plus proches
+    df_titre = df_titre.sort_values(by=['Distance'], ascending=True)
+    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    df_titre = df_titre.iloc[2:]
+    print("Les derniers films plus proches",df_aglo['french_title'])
+    df_aglo = df_aglo.reset_index(drop=True)
+    df_aglo
+
+# # Filtrer par d'autres conditions    
+selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", all_tags_unique)
 
 if selected=="Le petit +":
     #Header
