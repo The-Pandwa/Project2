@@ -30,14 +30,11 @@ from fuzzywuzzy import fuzz
 import nltk
 nltk.download('popular')
 
-# Import dataset
-df_ML = pd.read_csv('movie_beforeML.csv')
-    
 #Configuration de la page
 st.set_page_config(
-    page_title="Creus-é-Moi",
+    page_title="Creus-émoi",
     layout="wide",
-    initial_sidebar_state="collapsed")
+    initial_sidebar_state="expanded")
 
 phrase_chargement = [
     "Immersion au coeur de la matrice en cours",
@@ -45,10 +42,10 @@ phrase_chargement = [
     "En route vers les 88mph, pour un résultat qui décoiffe !",
     "Élaboration de votre Truman Show personnel",
     "Tentative d'éviter l'iceberg droit devant !",
-    "Saut dans l'hyper espace cinéphile",
+    "Propulsion dans l'hyper espace cinéphile",
     "Auto-destruction de l'écran de chargement en cours...",
     "Saut dans votre rêve partagé imminent",
-    "Ouverture d'une brèche dans votre chargement à coup de hache",
+    "Ouverture d'une brèche dans votre chargement à la façon de Jack !",
     "Je suis un écran, un écran de chargement",
     "Déchiffrement du Da Vinci Code en cours...",
     "Recrutement des nouveaux Avengers en cours ",
@@ -56,30 +53,29 @@ phrase_chargement = [
     "Création de la communauté des cinéphiles",
     "Envolé de l'écran de chargement à vélo",
     "Voyage vers l'inconnu et l'au delà cinématographique !",
-    "Exposition à la kryptonite en cours"
+    "Exposition à la kryptonite en cours",
+    "Transformation des Mugwais en Gremlins"
 ]
 
-# Sélectionner une citation aléatoire
-citation_aleatoire = random.choice(phrase_chargement)
+# Import dataset
+df_ML = pd.read_csv('movie_beforeML.csv')
 
-with st.spinner(citation_aleatoire):
-    time.sleep(5)
+# Sidebar
+st.divider()
+st.sidebar.title('Votre système de recommandation')
 
+#Image sidebar projet
 image_path = "C:/Users/costi/Documents/Github/Project2/image/Clap.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
 # Autres éléments dans la barre latérale
-st.sidebar.title("Creus-é-Moi")
+st.sidebar.title("Creus-émoi")
 
 #Options Menu
 with st.sidebar:
-    selected = option_menu('Menu', ["Mode d'emploi", 'Recommendation','Le petit +'],
+    selected = option_menu('Menu', ["Mode d'emploi", 'Recommandation',"L'équipe du site"],
     icons=['play-btn','search','info-circle'], menu_icon='intersect', default_index=0)
-
-with st.sidebar:
-    # Ajout d'une icône avec Font Awesome
-    nanar = st.write(":rocket:")
 
 if selected=="Mode d'emploi":
     st.title("**Le mode d'emploi :**")
@@ -98,18 +94,9 @@ if selected=="Mode d'emploi":
     st.write("**Encore là ?**")
     st.write("Vous avez eu le courage de lire ce mode d'emploi, vous pouvez donc profitez de notre *easter egg* essentiel à votre passion de cinéphile ! Parcourez nos onglets et vous pourrez profitez d'une option parfaite pour voir le meilleur... du pire !!!")
 
-if selected=="Recommendation":
-    #Header
-    st.title("Voici pour vous, nos suggestions d'après vos critères")
+if selected=="Recommandation":
+    loading = st.subheader(random.choice(phrase_chargement))
 
-    st.divider()
-    # Création de la sidebar et features
-    st.sidebar.title('Votre système de recommandation')
-
-    # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-    selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
-
-        #Test Algo
     def get_top_values(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
         exploded_genres = column.explode()
@@ -171,8 +158,6 @@ if selected=="Recommendation":
         # Affichage du résultat avec un saut de ligne après chaque genre
         for genre, count in sorted_genres:
             print(genre, count)
-
-    from collections import Counter
 
     def clean_and_count_genres(column, top_n=None):
         # Définir une fonction pour nettoyer chaque élément de la colonne
@@ -255,10 +240,10 @@ if selected=="Recommendation":
     pd.set_option('display.max_columns', None)
     init=False
 
-    id ='tt0241527'
+    # #choix film
+    titre = 'Titanic'
 
     if init == False:
-        print("init")
         df_complet= df_ML
         df_complet = df_complet.dropna(subset=['release_date'])
         df_complet = df_complet.reset_index(drop=True)
@@ -273,7 +258,7 @@ if selected=="Recommendation":
         clean_and_count_genres('producers', top_n=100000)
         clean_and_count_genres('other_crew', top_n=100000)
         df_reco = df_complet.copy()
-        index_movie = df_reco.loc[df_reco['imdb_id']== id].index[0]
+        # index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
         df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
         release_years_unique = df_reco['release_year'].astype(str).unique().tolist()
         genres_unique = df_reco['genres'].astype(str).unique().tolist()
@@ -327,12 +312,16 @@ if selected=="Recommendation":
         other_crew_unique = [genre.strip("'") for genre in other_crew_unique]
         other_crew_unique = list(set(other_crew_unique))
         other_crew_unique = [element for element in other_crew_unique if element != '']
-        all_tags_unique = release_years_unique + genres_unique + production_countries_unique + production_companies_name_unique + french_title_unique + actors_unique + actresses_unique + directors_unique + composers_unique + writers_unique + producers_unique + other_crew_unique
-        list_unique = [release_years_unique,genres_unique,production_countries_unique,production_companies_name_unique,french_title_unique,actors_unique,actresses_unique,directors_unique,composers_unique,writers_unique,producers_unique,other_crew_unique]
+        tags_actors = list(set(actors_unique + actresses_unique))
+        tags_directors = directors_unique
+        tags_crew = list(set(composers_unique + writers_unique + producers_unique + other_crew_unique))
+        tags_genres = genres_unique
+        # all_tags_unique = release_years_unique + genres_unique + production_countries_unique + production_companies_name_unique + actors_unique + actresses_unique + directors_unique + composers_unique + writers_unique + producers_unique + other_crew_unique
+        # list_unique = [release_years_unique,genres_unique,production_countries_unique,production_companies_name_unique,french_title_unique,actors_unique,actresses_unique,directors_unique,composers_unique,writers_unique,producers_unique,other_crew_unique]
         init = True
 
     df_reco = df_complet.copy()
-    index_movie = df_reco.loc[df_reco['imdb_id']== id].index[0]
+    index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
 
     #Conversion release_date
     df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
@@ -409,6 +398,21 @@ if selected=="Recommendation":
     for actor in other_crew_premiere_ligne:
         df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
     df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+    #Header
+    st.title("Votre film :")
+    with st.sidebar.form("my_form"):
+        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+        selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
+        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+        selected_film = st.sidebar.multiselect('Sélection de genres', tags_genres)       
+        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+        selected_film = st.sidebar.multiselect("Sélection d'acteurs", tags_actors)
+        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+        selected_film = st.sidebar.multiselect("Sélection d'un réalisateur", tags_directors)
+        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
+        selected_film = st.sidebar.multiselect("Ajout un membre de l'équipe technique ?", tags_crew)
+        # Bouton Submit pour appliquer les changements
+        submitted = st.form_submit_button("Fais p'ter les popcorns !")
 
     # Normaliser les caractéristiques
     scaler = StandardScaler()
@@ -489,14 +493,68 @@ if selected=="Recommendation":
     df_titre = df_titre.iloc[2:]
     print("Les derniers films plus proches",df_aglo['french_title'])
     df_aglo = df_aglo.reset_index(drop=True)
-    df_aglo
+    # df_aglo
+    loading.empty()
 
-# # Filtrer par d'autres conditions    
-selected_conditions = st.sidebar.multiselect("Sélectionnez d'autres paramètres (genre(s),acteur(s)/actrice(s),réalisateur) :", all_tags_unique)
+    #image du film chosis
+    col0, col1= st.columns(2)
+    with col0:
+        selected_movie = df_ML.query(f"french_title == '{titre}'").iloc[0]
+        full_link_0 = "https://image.tmdb.org/t/p/w500" + selected_movie['poster_path']
+        st.image(full_link_0,output_format="auto")
+    with col1:
+        st.subheader(selected_movie['french_title'])
+        st.write("**Synopsis :**", selected_movie['overview'])
+        st.write("**Genre(s) :**", selected_movie['genres'])
+        st.write("**Casting :**", selected_movie['actors'], selected_movie['actresses'])
+        st.write("**Réalisateur :**", selected_movie['directors'])
+        st.write("**Date de sortie :**", selected_movie['release_date'])
+        st.write("**Société(s) de production :**", selected_movie['production_companies_name'])
 
-if selected=="Le petit +":
+
+        
+    
+    #Calcul dynamiquement le nombre de colonnes
+    st.subheader("Nos recommandations :")
+    nombre_total_de_colonnes = len(df_aglo)
+    # Nombre maximal de colonnes par ligne
+    colonnes_par_ligne = 3
+
+    # Boucle pour afficher les images et les titres dans des colonnes
+    for i in range(len(df_aglo)):
+        # Créer une nouvelle ligne de colonnes après chaque 'colonnes_par_ligne'
+        if i % colonnes_par_ligne == 0:
+            colonnes = st.columns(colonnes_par_ligne)
+
+        # Calcul de l'index dans la ligne actuelle
+        index_dans_la_ligne = i % colonnes_par_ligne
+
+        # Calcul de l'index global
+        index = i * colonnes_par_ligne + index_dans_la_ligne
+
+        # Vérifier si l'index est dans la plage du DataFrame
+        if index < nombre_total_de_colonnes:
+            full_link = "https://image.tmdb.org/t/p/w500" + df_aglo['poster_path'].iloc[index]
+            colonnes[index_dans_la_ligne].image(full_link, output_format="auto")
+            colonnes[index_dans_la_ligne].write(df_aglo['french_title'].iloc[index])
+    
+
+if selected=="L'équipe du site":
     #Header
-    st.title("Le modele d'defdsvdv :")
-    st.subheader("Si vo !")
-    st.write("Salut la compagnie !")
-    st.write("qsdsqc à la marche")
+    st.title("Présentation de l'équipe :")
+    col0, col1, col2= st.columns(3)
+    with col0:
+        st.subheader('Clara')
+        st.write("The Scrum Princess")
+    with col1:
+        st.subheader('Basile')
+        st.write("Magician ML developer")
+    with col2:
+        st.subheader('Costin')
+        st.write("Streamlit conqueror")        
+
+with st.sidebar:
+    # Bouton avec une icône à partir de Font Awesome
+    if st.button(":twisted_rightwards_arrows:") :
+        # Afficher la nouvelle page lorsque le bouton est cliqué
+        st.write('Nanar')
