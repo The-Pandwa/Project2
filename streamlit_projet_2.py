@@ -31,7 +31,7 @@ nltk.download('popular')
 
 #Configuration de la page
 st.set_page_config(
-    page_title="Creus-émoi",
+    page_title="CBC",
     layout="wide",
     initial_sidebar_state="expanded")
 
@@ -65,10 +65,8 @@ image_path = "C:/Users/costi/Documents/Github/Project2/image/cbc.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
-st.sidebar.divider()
 
-# Autres éléments dans la barre latérale
-st.sidebar.title("Creus-émoi")
+st.sidebar.divider()
 
 #Options Menu
 with st.sidebar:
@@ -94,6 +92,8 @@ if selected=="Mode d'emploi":
 
 if selected=="Recommandation":
     loading = st.subheader(random.choice(phrase_chargement))
+
+
 
     def get_top_values(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
@@ -218,11 +218,12 @@ if selected=="Recommandation":
     pd.set_option('display.max_columns', None)
     init=False
 
-    # #choix film
-    titre = 'Titanic'
+###############################################################################
+#############################################################################
 
     if init == False:
-        df_complet = df_ML.dropna(subset=['release_date'])
+        df_complet= df_ML
+        df_complet = df_complet.dropna(subset=['release_date'])
         df_complet = df_complet.reset_index(drop=True)
         df_complet['release_date'] = pd.to_datetime(df_complet['release_date'])
         clean_and_count_genres('production_countries', top_n=100000)
@@ -274,10 +275,10 @@ if selected=="Recommandation":
         composers_unique = list(set(composers_unique))
         composers_unique = [element for element in composers_unique if element != '']
         writers_unique = df_reco['writers'].astype(str).unique().tolist()
-        writers_unique = flatten_list(writers_unique)
-        writers_unique = [genre.strip("'") for genre in writers_unique]
-        writers_unique = list(set(writers_unique))
-        writers_unique = [element for element in writers_unique if element != '']
+        writers_unique = flatten_list(composers_unique)
+        writers_unique = [genre.strip("'") for genre in composers_unique]
+        writers_unique = list(set(composers_unique))
+        writers_unique = [element for element in composers_unique if element != '']
         producers_unique = df_reco['producers'].astype(str).unique().tolist()
         producers_unique = flatten_list(producers_unique)
         producers_unique = [genre.strip("'") for genre in producers_unique]
@@ -293,266 +294,419 @@ if selected=="Recommandation":
         tags_crew = list(set(composers_unique + writers_unique + producers_unique + other_crew_unique))
         tags_genres = genres_unique
         init = True
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
 
-    df_reco = df_complet.copy()
-    index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
-    df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
+        with st.sidebar.form("my_form"):
+            # Filtrer par film. Le point unique permet de retourner une liste plutôt que d'avoir à saisir du texte.
+            # selected_title = st.sidebar.multiselect('Sélectionnez votre film', df_complet['french_title'].unique())
+            titre = st.sidebar.text_input('Indiquer un titre de film :', value="")
+            # Filtrer par genre.
+            selected_genres = st.sidebar.multiselect('Sélection de genres', tags_genres)
+            # Filtrer par acteurs.
+            selected_actors = st.sidebar.multiselect("Sélection d'acteurs", tags_actors)
+            # Filtrer par réalisateur.
+            selected_directors = st.sidebar.multiselect("Sélection d'un réalisateur", tags_directors)
+            # Filtrer par équipe technique.
+            selected_crew = st.sidebar.multiselect("Ajout d'un membre de l'équipe technique ?", tags_crew)
+            # Bouton Submit pour appliquer les changements
+            # submitted = st.form_submit_button("Fais p'ter les popcorns !")
 
-    nb_tag=len(tags_actors)+len(tags_directors)+len(tags_crew)+len(tags_genres)
+        # #choix film
+        tags_actors = selected_actors
+        #['Matthew McConaughey', 'Hilary Swank']
+        tags_directors = selected_directors
+        #['Steven Spielberg']
+        tags_crew = selected_crew
+        #['Nathan Crowley', 'Lee Smith', 'John Williams', 'Lynda Obst','Senad Halilbasic','Jonathan Nolan']
+        tags_genres = selected_genres
+        #['Thriller','Mystery']
 
-    tag_actor_dummy=[]
-    tag_actress_dummy=[]
-    tag_composers_dummy=[]
-    tag_writers_dummy=[]
-    tag_producers_dummy=[]
-    tag_other_crew_dummy=[]
+        df_reco = df_complet.copy()
+        index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
+        df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
 
-    for person in tags_actors:
-        if person in actors_unique:
-            tag_actor_dummy.append(person)
+        nb_tag=len(tags_actors)+len(tags_directors)+len(tags_crew)+len(tags_genres)
+
+        tag_actor_dummy=[]
+        tag_actress_dummy=[]
+        tag_composers_dummy=[]
+        tag_writers_dummy=[]
+        tag_producers_dummy=[]
+        tag_other_crew_dummy=[]
+
+        for person in tags_actors:
+            if person in actors_unique:
+                tag_actor_dummy.append(person)
+            else:
+                tag_actress_dummy.append(person)
+
+        for person in tags_crew :
+            if person in composers_unique:
+                tag_composers_dummy.append(person)
+            elif person in writers_unique:
+                tag_writers_dummy.append(person)
+            elif person in producers_unique:
+                tag_producers_dummy.append(person)
+            else:
+                tag_other_crew_dummy.append(person)
+
+        genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
+
+        #Partie genres
+        df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
+        if tags_genres:
+            genres_premiere_ligne=tags_genres + genres_premiere_ligne
+        for genre in genres_premiere_ligne:
+            df_dummies_genres[genre] = df_reco['genres'].apply(lambda x: genre in eval(x)).astype(int)
+            #df_dummies_genres[genre]*=200
+        df_reco = pd.concat([df_reco, df_dummies_genres], axis=1)
+
+        #Partie production_countries
+        if not(tags_actors or tags_directors or tags_crew or tags_genres):
+            production_countries_premiere_ligne = df_reco.iloc[index_movie]['production_countries']
+            df_dummies_actors = pd.DataFrame(columns=production_countries_premiere_ligne)
+            for actor in production_countries_premiere_ligne:
+                df_dummies_actors[actor] = df_reco['production_countries'].apply(lambda x: actor in x).astype(int)
+            df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
         else:
-            tag_actress_dummy.append(person)
+            print ("y'a des tags")
 
-    for person in tags_crew :
-        if person in composers_unique:
-            tag_composers_dummy.append(person)
-        elif person in writers_unique:
-            tag_writers_dummy.append(person)
-        elif person in producers_unique:
-            tag_producers_dummy.append(person)
+        #production_companies_name
+        if not(tags_actors or tags_directors or tags_crew or tags_genres):
+            actors_premiere_ligne = df_reco.iloc[index_movie]['production_companies_name']
+            df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
+            for actor in actors_premiere_ligne:
+                df_dummies_actors[actor] = df_reco['production_companies_name'].apply(lambda x: actor in x).astype(int)
+            df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
         else:
-            tag_other_crew_dummy.append(person)
+            print ("y'a des tags")
 
-    genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
-
-    #Partie genres
-    df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
-    if tags_genres:
-        genres_premiere_ligne=tags_genres + genres_premiere_ligne
-    for genre in genres_premiere_ligne:
-        df_dummies_genres[genre] = df_reco['genres'].apply(lambda x: genre in eval(x)).astype(int)
-        #df_dummies_genres[genre]*=200
-    df_reco = pd.concat([df_reco, df_dummies_genres], axis=1)
-
-    #Partie production_countries
-    if not(tags_actors or tags_directors or tags_crew or tags_genres):
-        production_countries_premiere_ligne = df_reco.iloc[index_movie]['production_countries']
-        df_dummies_actors = pd.DataFrame(columns=production_countries_premiere_ligne)
-        for actor in production_countries_premiere_ligne:
-            df_dummies_actors[actor] = df_reco['production_countries'].apply(lambda x: actor in x).astype(int)
-        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
-    else:
-        print ("y'a des tags")
-
-    #production_companies_name
-    if not(tags_actors or tags_directors or tags_crew or tags_genres):
-        actors_premiere_ligne = df_reco.iloc[index_movie]['production_companies_name']
+        #Partie actors
+        actors_premiere_ligne = df_reco.iloc[index_movie]['actors']
+        if tag_actor_dummy:
+            actors_premiere_ligne = tag_actor_dummy + actors_premiere_ligne
         df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
         for actor in actors_premiere_ligne:
-            df_dummies_actors[actor] = df_reco['production_companies_name'].apply(lambda x: actor in x).astype(int)
+            df_dummies_actors[actor] = df_reco['actors'].apply(lambda x: actor in x).astype(int)
         df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
-    else:
-        print ("y'a des tags")
 
-    #Partie actors
-    actors_premiere_ligne = df_reco.iloc[index_movie]['actors']
-    if tag_actor_dummy:
-        actors_premiere_ligne = tag_actor_dummy + actors_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
-    for actor in actors_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['actors'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        #Partie actresses
+        actress_premiere_ligne = df_reco.iloc[index_movie]['actresses']
+        if tag_actress_dummy:
+            actress_premiere_ligne = tag_actress_dummy + actress_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=actress_premiere_ligne)
+        for actor in actress_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['actresses'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
 
-    #Partie actresses
-    actress_premiere_ligne = df_reco.iloc[index_movie]['actresses']
-    if tag_actress_dummy:
-        actress_premiere_ligne = tag_actress_dummy + actress_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=actress_premiere_ligne)
-    for actor in actress_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['actresses'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        #Partie directors
+        directors_premiere_ligne = df_reco.iloc[index_movie]['directors']
+        if tags_directors:
+            directors_premiere_ligne = tags_directors + directors_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=directors_premiere_ligne)
+        for actor in directors_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['directors'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
 
-    #Partie directors
-    directors_premiere_ligne = df_reco.iloc[index_movie]['directors']
-    if tags_directors:
-        directors_premiere_ligne = tags_directors + directors_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=directors_premiere_ligne)
-    for actor in directors_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['directors'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        #Partie composers
+        composer_premiere_ligne = df_reco.iloc[index_movie]['composers']
+        if tag_composers_dummy:
+            composer_premiere_ligne = tag_composers_dummy + composer_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=composer_premiere_ligne)
+        for actor in composer_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['composers'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
 
-    #Partie composers
-    composer_premiere_ligne = df_reco.iloc[index_movie]['composers']
-    if tag_composers_dummy:
-        composer_premiere_ligne = tag_composers_dummy + composer_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=composer_premiere_ligne)
-    for actor in composer_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['composers'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        #Partie writers
+        writers_premiere_ligne = df_reco.iloc[index_movie]['writers']
+        if tag_writers_dummy:
+            writers_premiere_ligne = tag_writers_dummy + writers_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=writers_premiere_ligne)
+        for actor in writers_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['writers'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
 
-    #Partie writers
-    writers_premiere_ligne = df_reco.iloc[index_movie]['writers']
-    if tag_writers_dummy:
-        writers_premiere_ligne = tag_writers_dummy + writers_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=writers_premiere_ligne)
-    for actor in writers_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['writers'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        #Partie producers
+        producers_premiere_ligne = df_reco.iloc[index_movie]['producers']
+        if tag_producers_dummy:
+            producers_premiere_ligne = tag_producers_dummy + producers_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=producers_premiere_ligne)
+        for actor in producers_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['producers'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        
+        #Partie other_crew
+        other_crew_premiere_ligne = df_reco.iloc[index_movie]['other_crew']
+        if tag_producers_dummy:
+            other_crew_premiere_ligne = tag_other_crew_dummy + other_crew_premiere_ligne
+        df_dummies_actors = pd.DataFrame(columns=other_crew_premiere_ligne)
+        for actor in other_crew_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
 
-    #Partie producers
-    producers_premiere_ligne = df_reco.iloc[index_movie]['producers']
-    if tag_producers_dummy:
-        producers_premiere_ligne = tag_producers_dummy + producers_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=producers_premiere_ligne)
-    for actor in producers_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['producers'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        # Normaliser les caractéristiques
+        scaler = StandardScaler()
+        X = df_reco.select_dtypes(include='number')
+        X_scaled = scaler.fit_transform(X)
+        y = df_reco['french_title']
+        #print(X)
 
-    #Partie other_crew
-    other_crew_premiere_ligne = df_reco.iloc[index_movie]['other_crew']
-    if tag_producers_dummy:
-        other_crew_premiere_ligne = tag_other_crew_dummy + other_crew_premiere_ligne
-    df_dummies_actors = pd.DataFrame(columns=other_crew_premiere_ligne)
-    for actor in other_crew_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+        # Entraîner le modèle KNeighborsClassifier
+        if not(tags_actors or tags_directors or tags_crew or tags_genres):
+            model = KNeighborsClassifier(n_neighbors=100, weights='uniform')
+        else:
+            model = KNeighborsClassifier(n_neighbors=88014, weights='uniform')
+        model.fit(X_scaled, y)
 
-    #Header
+        # Créer un DataFrame pour stocker les recommandations et les distances
+        distances, recommandation = model.kneighbors([X_scaled[index_movie, :]])
 
-    st.title("Votre film :")
-    with st.sidebar.form("my_form"):
-        # Filtrer par film. Le point unique permet de retourner une liste plutôt que d'avoir à saisir du texte.
-        selected_title = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
-        # Filtrer par genre.
-        selected_genres = st.sidebar.multiselect('Sélection de genres', tags_genres)
-        # Filtrer par acteurs.
-        selected_actors = st.sidebar.multiselect("Sélection d'acteurs", tags_actors)
-        # Filtrer par réalisateur.
-        selected_directors = st.sidebar.multiselect("Sélection d'un réalisateur", tags_directors)
-        # Filtrer par équipe technique.
-        selected_crew = st.sidebar.multiselect("Ajout d'un membre de l'équipe technique ?", tags_crew)
-        # Bouton Submit pour appliquer les changements
-        submitted = st.form_submit_button("Fais p'ter les popcorns !")
+        # Créer un DataFrame pour stocker les recommandations et les distances
+        df_reco_with_distance = df_reco.iloc[recommandation[0]].copy()
+        df_reco_with_distance['Distance'] = distances[0]
+        df_titre = df_reco_with_distance
 
-    # Normaliser les caractéristiques
-    scaler = StandardScaler()
-    X = df_reco.select_dtypes(include='number')
-    X_scaled = scaler.fit_transform(X)
-    y = df_reco['french_title']
+        df_titre = df_titre.reset_index(drop=True)
+        df_target = df_titre.head(1)
 
-    # Entraîner le modèle KNeighborsClassifier
-    model = KNeighborsClassifier(n_neighbors=100, weights='uniform')
-    model.fit(X_scaled, y)
+    # with st.sidebar:
+    #     # Bouton avec une icône à partir de Font Awesome
+    #     if st.toggle(':rocket:', value = False) :
+    #         # Afficher la nouvelle page lorsque le bouton est cliqué
+    #         st.balloons()
+    #         st.balloons()
+    #         st.balloons()
+    #         st.balloons()
+    #         st.balloons()
+    #         st.balloons()
 
-    # Créer un DataFrame pour stocker les recommandations et les distances
-    distances, recommandation = model.kneighbors([X_scaled[index_movie, :]])
+    #         nanard_passage = False
+    #         if mode_nanard==True and nanard_passage == False:
+    #                 link="/content/drive/MyDrive/Data/Cleaned/tmdb_full_cleaned.csv"
+    #                 df_old= pd.read_csv(link, sep=",")
+    #                 df_old= df_old[['imdb_id','vote_count']]
+    #                 df_nanards = pd.merge(df_titre, df_old, left_on='imdb_id', right_on='imdb_id', how='inner')
+    #                 nanard_passage = True
 
-    # Créer un DataFrame pour stocker les recommandations et les distances
-    df_reco_with_distance = df_reco.iloc[recommandation[0]].copy()
-    df_reco_with_distance['Distance'] = distances[0]
-    df_titre = df_reco_with_distance
+    #         #Mode sans tags
+    #         if not(tags_actors or tags_directors or tags_crew or tags_genres):
+    #             if mode_nanard==True:
+    #                 df_titre = df_nanards[df_nanards['vote_count'] > 100]
+    #                 df_titre = df_titre.sort_values(by='popularite_ponderee')
+    #                 num_rows_to_keep = int(0.2 * len(df_titre))
+    #                 df_titre_top_20_percent = df_titre.iloc[:num_rows_to_keep]
+    #                 df_titre = df_titre_top_20_percent.copy()
+    #                 df_titre = df_titre.sort_values(by='popularite_ponderee')
+    #                 df_aglo = get_episodes(index_movie,df_titre)
+    #                 df_titre = df_titre.drop(df_aglo.index, axis=0)
+    #                 df_titre = df_titre.iloc[1:]
+    #                 #print("Les suites", df_aglo['french_title'])
+    #                 #On cherche les films avec les genres les plus proches
+    #                 df_titre = df_titre.sort_values(by=genres_premiere_ligne, ascending=False)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(4)])
+    #                 df_titre = df_titre.iloc[4:]
+    #                 #On cherche les pires films dans les plus proches
+    #                 df_titre = df_titre.sort_values(by=['popularite_ponderee'], ascending=True)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(3)])
+    #                 df_titre = df_titre.iloc[3:]
+    #                 #On cherche les films direct les plus proches
+    #                 df_titre = df_titre.sort_values(by=['Distance'], ascending=True)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                 df_titre = df_titre.iloc[2:]
+    #                 #print("Les derniers films plus proches",df_aglo['french_title'])
+    #                 df_aglo = df_aglo.sort_values(by=['Distance'], ascending=True)
+    #                 df_aglo = df_aglo.reset_index(drop=True)
+    #             else:
+    #                 df_aglo = get_episodes(index_movie,df_titre)
+    #                 df_titre = df_titre.drop(df_aglo.index, axis=0)
+    #                 df_titre = df_titre.iloc[1:]
+    #                 #print("Les suites", df_aglo['french_title'])
+    #                 #On cherche les films avec les genres les plus proches
+    #                 df_titre = df_titre.sort_values(by=genres_premiere_ligne, ascending=False)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(3)])
+    #                 df_titre = df_titre.iloc[3:]
+    #                 #print("Les genres proches", df_aglo['french_title'])
+    #                 #popularite_target = float(df_target["popularite_ponderee"])
+    #                 #original_popularite_target = float(df_target["popularite_ponderee"])
 
-    df_titre = df_titre.reset_index(drop=True)
-    df_target = df_titre.head(1)
 
-    #On cherche les suites
-    df_aglo = get_episodes(index_movie,df_titre)
-    df_titre = df_titre.drop(df_aglo.index, axis=0)
-    df_titre = df_titre.iloc[1:]
-    print("Les suites", df_aglo['french_title'])
-    #On cherche les films avec les genres les plus proches
-    df_titre = df_titre.sort_values(by=genres_premiere_ligne, ascending=False)
-    df_aglo = pd.concat([df_aglo, df_titre.head(3)])
-    df_titre = df_titre.iloc[3:]
-    print("Les genres proches", df_aglo['french_title'])
-    popularite_target = float(df_target["popularite_ponderee"])
-    original_popularite_target = float(df_target["popularite_ponderee"])
-    if popularite_target > 6:
-        popularite_target = float(df_target["popularite_ponderee"]-1.5)
-    if popularite_target > 6.5:
-        popularite_target = float(df_target["popularite_ponderee"]-2)
-    if popularite_target > 7:
-        popularite_target = float(df_target["popularite_ponderee"]-2.5)
-    if popularite_target > 7.5:
-        popularite_target = float(df_target["popularite_ponderee"]-3)
-    if popularite_target > 8:
-        popularite_target = float(df_target["popularite_ponderee"]-3.5)
-    if popularite_target > 8.5:
-        popularite_target = float(df_target["popularite_ponderee"]-4)
-    if popularite_target > 9:
-        popularite_target = float(df_target["popularite_ponderee"]-4.5)
 
-    # Filtrer les lignes de df_titre en utilisant la méthode query
-    df_titre = df_titre.query("popularite_ponderee > @popularite_target")
-    df_titre = df_titre.reset_index(drop=True)
+    #                 # Filtrer les lignes de df_titre en utilisant la méthode query
 
-    #On cherche les meilleurs films dans les plus proches
-    df_titre = df_titre.sort_values(by=['popularite_ponderee'], ascending=False)
-    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
-    df_titre = df_titre.iloc[2:]
-    print("Les meilleurs films proches",df_aglo['french_title'])
-    #On cherche les films avec les acteurs les plus proches
-    df_titre =  df_titre.sort_values(by=actors_premiere_ligne + ['Distance'], ascending=[False]*len(actors_premiere_ligne) + [False])
-    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
-    df_titre = df_titre.iloc[2:]
-    print("Les memes acteurs", df_aglo['french_title'])
-    #On cherche les films avec les actrices les plus proches, s'il yen a
-    if actress_premiere_ligne != '':
-        df_titre =  df_titre.sort_values(by=actress_premiere_ligne + ['Distance'], ascending=[False]*len(actress_premiere_ligne) + [False])
-        df_aglo = pd.concat([df_aglo, df_titre.head(2)])
-        df_titre = df_titre.iloc[2:]
-    print("Les memes actrices", df_aglo['french_title'])
-    #On cherche les films avec les réalisateurs les plus proches
-    df_titre =  df_titre.sort_values(by=directors_premiere_ligne + ['Distance'], ascending=[False]*len(directors_premiere_ligne) + [False])
-    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
-    df_titre = df_titre.iloc[2:]
-    print("Les memes real",df_aglo['french_title'])
-    #On cherche les films direct les plus proches
-    df_titre = df_titre.sort_values(by=['Distance'], ascending=True)
-    df_aglo = pd.concat([df_aglo, df_titre.head(2)])
-    df_titre = df_titre.iloc[2:]
-    print("Les derniers films plus proches",df_aglo['french_title'])
-    df_aglo = df_aglo.reset_index(drop=True)
-    # df_aglo
-    loading.empty()
+    #                 #df_titre = df_titre.reset_index(drop=True)
+
+    #                 #On cherche les meilleurs films dans les plus proches
+    #                 df_titre = df_titre.sort_values(by=['popularite_ponderee'], ascending=True)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                 df_titre = df_titre.iloc[2:]
+    #                 #print("Les meilleurs films proches",df_aglo['french_title'])
+    #                 #On cherche les films avec les acteurs les plus proches
+    #                 df_titre =  df_titre.sort_values(by=actors_premiere_ligne + ['Distance'], ascending=[False]*len(actors_premiere_ligne) + [False])
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                 df_titre = df_titre.iloc[2:]
+    #                 #print("Les memes acteurs", df_aglo['french_title'])
+    #                 #On cherche les films avec les actrices les plus proches, s'il yen a
+    #                 if actress_premiere_ligne ==[]:
+    #                     print("pas d'actrices")
+    #                 else:
+    #                     df_titre =  df_titre.sort_values(by=actress_premiere_ligne + ['Distance'], ascending=[False]*len(actress_premiere_ligne) + [False])
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                     df_titre = df_titre.iloc[2:]
+
+    #                 #print("Les memes actrices", df_aglo['french_title'])
+    #                 #df_titre = df_titre.query("popularite_ponderee > @popularite_target")
+    #                 #On cherche les films avec les réalisateurs les plus proches
+    #                 df_titre =  df_titre.sort_values(by=directors_premiere_ligne + ['Distance'], ascending=[False]*len(directors_premiere_ligne) + [False])
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                 df_titre = df_titre.iloc[2:]
+    #                 #print("Les memes real",df_aglo['french_title'])
+    #                 #On cherche les films direct les plus proches
+    #                 df_titre = df_titre.sort_values(by=['Distance'], ascending=True)
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(2)])
+    #                 df_titre = df_titre.iloc[2:]
+    #                 #print("Les derniers films plus proches",df_aglo['french_title'])
+    #                 df_aglo = df_aglo.sort_values(by=['Distance'], ascending=True)
+    #                 df_aglo = df_aglo.reset_index(drop=True)
+    #                 print(df_aglo)
+    #         else:
+    #             if mode_nanard == True:
+    #                 df_titre = df_nanards[df_nanards['vote_count'] > 100]
+    #                 df_titre = df_titre.sort_values(by='popularite_ponderee')
+    #                 num_rows_to_keep = int(0.2 * len(df_titre))
+    #                 df_titre_top_20_percent = df_titre.iloc[:num_rows_to_keep]
+    #                 df_titre = df_titre_top_20_percent.copy()
+    #                 df_titre = df_titre.sort_values(by='popularite_ponderee')
+    #                 #df_aglo = get_episodes(index_movie,df_titre)
+    #                 movie_by_categ = round(12/(nb_tag +1))
+    #                 df_titre = df_titre.iloc[1:]
+    #                 df_base = df_titre.copy()
+    #                 df_aglo = df_titre.copy()[0:0]
+    #                 df_titre.sort_values(by='Distance')
+    #                 #Films les plus proche de base
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ-3)])
+    #                 df_titre = df_titre.iloc[movie_by_categ-3:]
+    #                 if tags_genres:
+    #                     df_titre = df_titre.loc[df_titre[tags_genres].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tags_genres))])
+    #                     print("genres",  df_titre.head(movie_by_categ*len(tags_genres)))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tags_genres):]
+    #                     df_titre = df_base
+    #                 if tag_actor_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_actor_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_actor_dummy))])
+    #                     print("tag_actor_dummy",  df_titre.head(movie_by_categ*len(tag_actor_dummy)))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_actor_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_actress_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_actress_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_actress_dummy))])
+    #                     print("tag_actress_dummy",  df_titre.head(movie_by_categ*len(tag_actress_dummy)))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_actress_dummy):]
+    #                     df_titre = df_base
+    #             else:
+    #                 movie_by_categ = round(15/(nb_tag +1))
+    #                 df_titre = df_titre.iloc[1:]
+    #                 df_base = df_titre.copy()
+    #                 df_aglo = df_titre.copy()[0:0]
+
+    #                 #Films les plus proche de base
+    #                 df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ)])
+    #                 df_titre = df_titre.iloc[movie_by_categ:]
+    #                 if tags_genres:
+    #                     df_titre = df_titre.loc[df_titre[tags_genres].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tags_genres))])
+    #                     print("genres",  df_titre.head(movie_by_categ*len(tags_genres)))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tags_genres):]
+    #                     df_titre = df_base
+    #                 if tags_directors:
+    #                     df_titre = df_titre.loc[df_titre[tags_directors].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tags_directors))])
+    #                     print("real",  df_titre.head(movie_by_categ*len(tags_genres)))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tags_directors):]
+    #                     df_titre = df_base
+    #                 if tag_actor_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_actor_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_actor_dummy))])
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_actor_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_actress_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_actress_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_actress_dummy))])
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_actress_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_composers_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_composers_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_composers_dummy))])
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_composers_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_writers_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_writers_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     print("writers",  df_titre.head(movie_by_categ))
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_writers_dummy))])
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_writers_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_producers_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_producers_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_producers_dummy))])
+    #                     print("producers",  df_titre.head(movie_by_categ))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_producers_dummy):]
+    #                     df_titre = df_base
+    #                 if tag_other_crew_dummy:
+    #                     df_titre = df_titre.loc[df_titre[tag_other_crew_dummy].any(axis=1)].sort_values(by=['Distance'], ascending=True)
+    #                     df_aglo = pd.concat([df_aglo, df_titre.head(movie_by_categ*len(tag_other_crew_dummy))])
+    #                     print("other crew",  df_titre.head(movie_by_categ))
+    #                     df_titre = df_titre.iloc[movie_by_categ*len(tag_other_crew_dummy):]
+    #                     df_titre = df_base
+
+    #     df_aglo = df_aglo.sort_values(by=['Distance'], ascending=True)
+    #     df_aglo.loc[:, ['french_title','popularite_ponderee', 'Distance','genres']]
+
+    #     df_to_scrap = df_aglo
+
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+##################################################################################################################################
+
 
     #image du film chosis
     col0, col1= st.columns(2)
     with col0:
-        selected_movie = df_ML.query(f"french_title == '{titre}'").iloc[0]
+        selected_movie = df_ML.query(f'french_title == "{titre}"').iloc[0]
         full_link_0 = "https://image.tmdb.org/t/p/w500" + selected_movie['poster_path']
         st.image(full_link_0,output_format="auto")
     with col1:
         st.subheader(selected_movie['french_title'])
         st.write("**Synopsis :**", selected_movie['overview'])
         st.write("**Genre(s) :**", selected_movie['genres'])
+        st.write("**Durée :**", str(selected_movie['runtime']))
         st.write("**Casting :**", selected_movie['actors'], selected_movie['actresses'])
         st.write("**Réalisateur :**", selected_movie['directors'])
         st.write("**Date de sortie :**", selected_movie['release_date'])
         st.write("**Société(s) de production :**", selected_movie['production_companies_name'])
 
-
-        
+    st.divider()   
     
     #Calcul dynamiquement le nombre de colonnes
     st.subheader("Nos recommandations :")
-    nombre_total_de_colonnes = len(df_aglo)
-    # Nombre maximal de colonnes par ligne
-    colonnes_par_ligne = 3
-    # Boucle pour afficher les images et les titres dans des colonnes
-    for i in range(len(df_aglo)):
-        # Créer une nouvelle ligne de colonnes après chaque 'colonnes_par_ligne'
-        if i % colonnes_par_ligne == 0:
-            colonnes = st.columns(colonnes_par_ligne)
-        # Calcul de l'index dans la ligne actuelle
-        index_dans_la_ligne = i % colonnes_par_ligne
-        # Calcul de l'index global
-        index = i * colonnes_par_ligne + index_dans_la_ligne
-        # Vérifier si l'index est dans la plage du DataFrame
-        if index < nombre_total_de_colonnes:
-            full_link = "https://image.tmdb.org/t/p/w500" + df_aglo['poster_path'].iloc[index]
-            colonnes[index_dans_la_ligne].image(full_link, output_format="auto")
-            colonnes[index_dans_la_ligne].write(df_aglo['french_title'].iloc[index])
+    row1, row2, row3, row4, row5 = st.columns(3), st.columns(3), st.columns(3), st.columns(3), st.columns(3)
+
+    for i, col in zip(range(len(df_titre)), row1 + row2 + row3 + row4 + row5):
+        with col.container():
+            col1, col2 = st.columns(2)
+            col1.image("https://image.tmdb.org/t/p/w500" + str(df_titre.iloc[i+1]['poster_path']), use_column_width="auto")
+            
+            with col2:
+                st.header(df_titre.iloc[i+1]['french_title'])
+                st.write("Realease Date : " + str(df_titre.iloc[i+1]['release_date']))
+                st.write("Runtime : " + str(df_titre.iloc[i+1]['runtime']) + " min")
+                st.write("Genre(s) : " + str(df_titre.iloc[i+1]['genres']))
 
 if selected == "L'équipe du site":
     # Header
@@ -562,25 +716,21 @@ if selected == "L'équipe du site":
     largeur_image = 200  # Remplacez par la largeur souhaitée en pixels
     with col0:
         st.subheader('Clara')
-        st.write("The Scrum Princess")
+        st.write("The Scrum Master of the Year")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Clara.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
     with col1:
         st.subheader('Basile')
-        st.write("Magician ML developer")
+        st.write("Magician ML developer and hero of French Title")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Basile.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
     with col2:
         st.subheader('Costin')
-        st.write("Streamlit conqueror")
+        st.write("Streamlit fighter")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Costin.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
 
-with st.sidebar:
-    # Bouton avec une icône à partir de Font Awesome
-    if st.button(":twisted_rightwards_arrows:") :
-        # Afficher la nouvelle page lorsque le bouton est cliqué
-        st.write('Nanar')
+
