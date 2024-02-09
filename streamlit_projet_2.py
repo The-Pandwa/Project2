@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import seaborn as sns
 import random
-import time
 import streamlit as st
 from streamlit_option_menu import option_menu
 from sklearn.preprocessing import MultiLabelBinarizer
@@ -81,7 +80,7 @@ if selected=="Mode d'emploi":
     st.title("**Le mode d'emploi :**")
     st.subheader("Bienvenue dans notre Système de Recommandation Cinématographique Inédit !")
     st.write("Afin de vous proposer la meilleure expérience possible notre équipe de Data Analyst, a travaillé d'arrache-pied pour vous, et nous sommes fiers de nous proposer notre outil.")
-    st.subheader("**__Guide de bonne pratique :__**")
+    st.subheader("**Guide des bonnes pratiques :**")
     st.write("Plongez dans l'univers du cinéma avec notre système de recommandation révolutionnaire, où chaque suggestion est soigneusement élaborée par un algorithme secret, gardé jalousement derrière le voile du mystère. Notre mission est de transformer votre expérience cinématographique en une aventure unique, sur mesure pour vous.")
     st.write("**Pourquoi secret ?**")
     st.write("Parce que la magie réside dans l'inattendu. Notre algorithme ne se contente pas de suivre les tendances ou de se conformer aux attentes habituelles. Au contraire, il explore des horizons inexplorés pour vous surprendre avec des recommandations que vous n'auriez jamais imaginées.")
