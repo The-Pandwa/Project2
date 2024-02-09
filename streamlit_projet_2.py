@@ -38,7 +38,7 @@ st.set_page_config(
 phrase_chargement = [
     "Immersion au coeur de la matrice en cours",
     "Chargement datant de l'âge du Jurassic",
-    "En route vers les 88mph, pour un résultat qui décoiffe !",
+    "Pied au plancher pour atteindre les 88mph !",
     "Élaboration de votre Truman Show personnel",
     "Tentative d'éviter l'iceberg droit devant !",
     "Propulsion dans l'hyper espace cinéphile",
@@ -59,14 +59,13 @@ phrase_chargement = [
 # Import dataset
 df_ML = pd.read_csv('movie_beforeML.csv')
 
-# Sidebar
-st.divider()
-st.sidebar.title('Votre système de recommandation')
-
+# # Sidebar
 #Image sidebar projet
 image_path = "C:/Users/costi/Documents/Github/Project2/image/clapperboard.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
+
+st.sidebar.divider()
 
 # Autres éléments dans la barre latérale
 st.sidebar.title("Creus-émoi")
@@ -257,7 +256,6 @@ if selected=="Recommandation":
         clean_and_count_genres('producers', top_n=100000)
         clean_and_count_genres('other_crew', top_n=100000)
         df_reco = df_complet.copy()
-        # index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
         df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
         release_years_unique = df_reco['release_year'].astype(str).unique().tolist()
         genres_unique = df_reco['genres'].astype(str).unique().tolist()
@@ -315,8 +313,6 @@ if selected=="Recommandation":
         tags_directors = directors_unique
         tags_crew = list(set(composers_unique + writers_unique + producers_unique + other_crew_unique))
         tags_genres = genres_unique
-        # all_tags_unique = release_years_unique + genres_unique + production_countries_unique + production_companies_name_unique + actors_unique + actresses_unique + directors_unique + composers_unique + writers_unique + producers_unique + other_crew_unique
-        # list_unique = [release_years_unique,genres_unique,production_countries_unique,production_companies_name_unique,french_title_unique,actors_unique,actresses_unique,directors_unique,composers_unique,writers_unique,producers_unique,other_crew_unique]
         init = True
 
     df_reco = df_complet.copy()
@@ -324,9 +320,7 @@ if selected=="Recommandation":
 
     #Conversion release_date
     df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
-
     genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
-    #index_movie = df_complet.loc[df_complet['french_title']== titre].index[0]
 
     #Partie genres
     df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
@@ -398,18 +392,19 @@ if selected=="Recommandation":
         df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
     df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
     #Header
+
     st.title("Votre film :")
     with st.sidebar.form("my_form"):
-        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-        selected_film = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
-        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-        selected_film = st.sidebar.multiselect('Sélection de genres', tags_genres)       
-        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-        selected_film = st.sidebar.multiselect("Sélection d'acteurs", tags_actors)
-        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-        selected_film = st.sidebar.multiselect("Sélection d'un réalisateur", tags_directors)
-        # # Filtrer par film. Le point unique permet de retourner une lsite plutôt que d'avoir à saisir du texte.
-        selected_film = st.sidebar.multiselect("Ajout un membre de l'équipe technique ?", tags_crew)
+        # Filtrer par film. Le point unique permet de retourner une liste plutôt que d'avoir à saisir du texte.
+        selected_title = st.sidebar.multiselect('Sélectionnez votre film', df_ML['french_title'].unique())
+        # Filtrer par genre.
+        selected_genres = st.sidebar.multiselect('Sélection de genres', tags_genres)
+        # Filtrer par acteurs.
+        selected_actors = st.sidebar.multiselect("Sélection d'acteurs", tags_actors)
+        # Filtrer par réalisateur.
+        selected_directors = st.sidebar.multiselect("Sélection d'un réalisateur", tags_directors)
+        # Filtrer par équipe technique.
+        selected_crew = st.sidebar.multiselect("Ajout d'un membre de l'équipe technique ?", tags_crew)
         # Bouton Submit pour appliquer les changements
         submitted = st.form_submit_button("Fais p'ter les popcorns !")
 
