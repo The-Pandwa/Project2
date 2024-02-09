@@ -64,7 +64,7 @@ st.divider()
 st.sidebar.title('Votre système de recommandation')
 
 #Image sidebar projet
-image_path = "C:/Users/costi/Documents/Github/Project2/image/Clap.png"
+image_path = "C:/Users/costi/Documents/Github/Project2/image/clapperboard.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
@@ -538,28 +538,34 @@ if selected=="Recommandation":
             colonnes[index_dans_la_ligne].write(df_aglo['french_title'].iloc[index])
     
 
-if selected=="L'équipe du site":
-    #Header
+if selected == "L'équipe du site":
+    # Header
     st.title("Présentation de l'équipe :")
-    col0, col1, col2= st.columns(3)
+    col0, col1, col2 = st.columns(3)
+
+    # Spécifier la largeur souhaitée
+    largeur_image = 200  # Remplacez par la largeur souhaitée en pixels
+
     with col0:
         st.subheader('Clara')
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Clara.png"
         image = Image.open(image_path)
-        st.sidebar.image(image, use_column_width=True)
+        st.image(image, use_column_width=True, width=largeur_image)
         st.write("The Scrum Princess")
+
     with col1:
         st.subheader('Basile')
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Basile.png"
         image = Image.open(image_path)
-        st.sidebar.image(image, use_column_width=True)
+        st.image(image, use_column_width=True, width=largeur_image)
         st.write("Magician ML developer")
+
     with col2:
         st.subheader('Costin')
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Costin.png"
         image = Image.open(image_path)
-        st.sidebar.image(image, use_column_width=True)
-        st.write("Streamlit conqueror")        
+        st.image(image, use_column_width=True, width=largeur_image)
+        st.write("Streamlit conqueror")
 
 with st.sidebar:
     # Bouton avec une icône à partir de Font Awesome
