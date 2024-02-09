@@ -61,7 +61,7 @@ df_ML = pd.read_csv('movie_beforeML.csv')
 
 # # Sidebar
 #Image sidebar projet
-image_path = "C:/Users/costi/Documents/Github/Project2/image/clapperboard.png"
+image_path = "C:/Users/costi/Documents/Github/Project2/image/cbc.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
@@ -98,61 +98,45 @@ if selected=="Recommandation":
     def get_top_values(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
         exploded_genres = column.explode()
-
         # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
         genre_counts = Counter(exploded_genres)
-
         # Supprimer les occurrences de chaînes de caractères vides
         genre_counts = {key: value for key, value in genre_counts.items() if key and not pd.isna(key)}
-
         # Tri des genres par ordre décroissant de fréquence
         sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
-
         # Si top_n est spécifié, limiter aux N premiers genres
         if top_n is not None:
             sorted_genres = sorted_genres[:top_n]
-
         # Renvoyer une liste des genres les plus représentés sans apostrophes et sans chaînes de caractères vides
         top_genres = [genre for genre, count in sorted_genres if genre]
-
         return top_genres
 
     def count_occurrences(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
         exploded_genres = column.explode()
-
         # Filtrer les éléments de la colonne qui ne sont ni vides ni NaN
         cleaned_genres = [item for item in exploded_genres if item and not pd.isna(item)]
-
         # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
         genre_counts = Counter(cleaned_genres)
-
         # Tri des genres par ordre décroissant de fréquence
         sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
-
         # Si top_n est spécifié, limiter aux N premiers genres
         if top_n is not None:
             sorted_genres = sorted_genres[:top_n]
-
         # Créer un dictionnaire contenant les genres et leurs occurrences
         result = {genre: count for genre, count in sorted_genres}
-
         return result
 
     def count_occurrences_old(column, top_n=None):
         # Utilisation de la fonction explode pour déplier les listes de genres
         exploded_genres = column.explode()
-
         # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
         genre_counts = Counter(exploded_genres)
-
         # Tri des genres par ordre décroissant de fréquence
         sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
-
         # Si top_n est spécifié, limiter aux N premiers genres
         if top_n is not None:
             sorted_genres = sorted_genres[:top_n]
-
         # Affichage du résultat avec un saut de ligne après chaque genre
         for genre, count in sorted_genres:
             print(genre, count)
@@ -166,25 +150,21 @@ if selected=="Recommandation":
             except (ValueError, SyntaxError):
                 # En cas d'erreur, renvoyer une liste vide
                 return []
-
         # Remplacer les valeurs NaN par une liste vide
         df_complet[column] = df_complet[column].fillna('').apply(clean_genre)
-
         # Utilisation de la fonction explode pour déplier les listes de genres
         exploded_genres = df_complet[column].explode()
-
         # Utilisation de Counter pour compter le nombre d'occurrences de chaque genre
         genre_counts = Counter(exploded_genres)
-
         # Trie des genres par ordre décroissant de fréquence
         sorted_genres = sorted(genre_counts.items(), key=lambda x: x[1], reverse=True)
-
         # Affichage des N premiers genres
         if top_n is not None:
             sorted_genres = sorted_genres[:top_n]
-
         # Affichage du résultat
         unique_genres = [genre for genre, count in sorted_genres]
+        #print("Genres uniques:", unique_genres)
+        #print("Occurrences:", genre_counts)
 
     def is_nan_string(s):
         try:
@@ -206,7 +186,6 @@ if selected=="Recommandation":
         for words in mots_phrase1:
             if words not in nltk.corpus.stopwords.words("french") and words not in nltk.corpus.stopwords.words("english"):
                 tokens_phrase1.append(words)
-
         for titre in df_titre.iloc[1:]['french_title']:
             phrase2=titre
             mots_phrase2 = phrase2.lower().split()
@@ -215,7 +194,7 @@ if selected=="Recommandation":
                 if words not in nltk.corpus.stopwords.words("french") and words not in nltk.corpus.stopwords.words("english"):
                     tokens_phrase2.append(words)
             pourcentage_mots_communs = fuzz.token_set_ratio(tokens_phrase1, tokens_phrase2)
-            if pourcentage_mots_communs>=55:
+            if pourcentage_mots_communs>=60:
                 print("Pour le film:",titre, "Pourcentage de mots communs :", pourcentage_mots_communs, "donc je pense que c'est une suite")
                 df_aglo = pd.concat([df_aglo, df_titre.loc[df_titre['french_title'] == titre]])
                 #df_titre.loc[df_titre['french_title']==titre]
@@ -235,6 +214,7 @@ if selected=="Recommandation":
             else:
                 flattened_lst.append(item)
         return flattened_lst
+        
     pd.set_option('display.max_columns', None)
     init=False
 
@@ -242,8 +222,7 @@ if selected=="Recommandation":
     titre = 'Titanic'
 
     if init == False:
-        df_complet= df_ML
-        df_complet = df_complet.dropna(subset=['release_date'])
+        df_complet = df_ML.dropna(subset=['release_date'])
         df_complet = df_complet.reset_index(drop=True)
         df_complet['release_date'] = pd.to_datetime(df_complet['release_date'])
         clean_and_count_genres('production_countries', top_n=100000)
@@ -295,10 +274,10 @@ if selected=="Recommandation":
         composers_unique = list(set(composers_unique))
         composers_unique = [element for element in composers_unique if element != '']
         writers_unique = df_reco['writers'].astype(str).unique().tolist()
-        writers_unique = flatten_list(composers_unique)
-        writers_unique = [genre.strip("'") for genre in composers_unique]
-        writers_unique = list(set(composers_unique))
-        writers_unique = [element for element in composers_unique if element != '']
+        writers_unique = flatten_list(writers_unique)
+        writers_unique = [genre.strip("'") for genre in writers_unique]
+        writers_unique = list(set(writers_unique))
+        writers_unique = [element for element in writers_unique if element != '']
         producers_unique = df_reco['producers'].astype(str).unique().tolist()
         producers_unique = flatten_list(producers_unique)
         producers_unique = [genre.strip("'") for genre in producers_unique]
@@ -317,34 +296,68 @@ if selected=="Recommandation":
 
     df_reco = df_complet.copy()
     index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
-
-    #Conversion release_date
     df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
+
+    nb_tag=len(tags_actors)+len(tags_directors)+len(tags_crew)+len(tags_genres)
+
+    tag_actor_dummy=[]
+    tag_actress_dummy=[]
+    tag_composers_dummy=[]
+    tag_writers_dummy=[]
+    tag_producers_dummy=[]
+    tag_other_crew_dummy=[]
+
+    for person in tags_actors:
+        if person in actors_unique:
+            tag_actor_dummy.append(person)
+        else:
+            tag_actress_dummy.append(person)
+
+    for person in tags_crew :
+        if person in composers_unique:
+            tag_composers_dummy.append(person)
+        elif person in writers_unique:
+            tag_writers_dummy.append(person)
+        elif person in producers_unique:
+            tag_producers_dummy.append(person)
+        else:
+            tag_other_crew_dummy.append(person)
+
     genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
 
     #Partie genres
     df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
+    if tags_genres:
+        genres_premiere_ligne=tags_genres + genres_premiere_ligne
     for genre in genres_premiere_ligne:
         df_dummies_genres[genre] = df_reco['genres'].apply(lambda x: genre in eval(x)).astype(int)
         #df_dummies_genres[genre]*=200
     df_reco = pd.concat([df_reco, df_dummies_genres], axis=1)
 
     #Partie production_countries
-    production_countries_premiere_ligne = df_reco.iloc[index_movie]['production_countries']
-    df_dummies_actors = pd.DataFrame(columns=production_countries_premiere_ligne)
-    for actor in production_countries_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['production_countries'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+    if not(tags_actors or tags_directors or tags_crew or tags_genres):
+        production_countries_premiere_ligne = df_reco.iloc[index_movie]['production_countries']
+        df_dummies_actors = pd.DataFrame(columns=production_countries_premiere_ligne)
+        for actor in production_countries_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['production_countries'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+    else:
+        print ("y'a des tags")
 
     #production_companies_name
-    actors_premiere_ligne = df_reco.iloc[index_movie]['production_companies_name']
-    df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
-    for actor in actors_premiere_ligne:
-        df_dummies_actors[actor] = df_reco['production_companies_name'].apply(lambda x: actor in x).astype(int)
-    df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+    if not(tags_actors or tags_directors or tags_crew or tags_genres):
+        actors_premiere_ligne = df_reco.iloc[index_movie]['production_companies_name']
+        df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
+        for actor in actors_premiere_ligne:
+            df_dummies_actors[actor] = df_reco['production_companies_name'].apply(lambda x: actor in x).astype(int)
+        df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+    else:
+        print ("y'a des tags")
 
     #Partie actors
     actors_premiere_ligne = df_reco.iloc[index_movie]['actors']
+    if tag_actor_dummy:
+        actors_premiere_ligne = tag_actor_dummy + actors_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=actors_premiere_ligne)
     for actor in actors_premiere_ligne:
         df_dummies_actors[actor] = df_reco['actors'].apply(lambda x: actor in x).astype(int)
@@ -352,6 +365,8 @@ if selected=="Recommandation":
 
     #Partie actresses
     actress_premiere_ligne = df_reco.iloc[index_movie]['actresses']
+    if tag_actress_dummy:
+        actress_premiere_ligne = tag_actress_dummy + actress_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=actress_premiere_ligne)
     for actor in actress_premiere_ligne:
         df_dummies_actors[actor] = df_reco['actresses'].apply(lambda x: actor in x).astype(int)
@@ -359,6 +374,8 @@ if selected=="Recommandation":
 
     #Partie directors
     directors_premiere_ligne = df_reco.iloc[index_movie]['directors']
+    if tags_directors:
+        directors_premiere_ligne = tags_directors + directors_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=directors_premiere_ligne)
     for actor in directors_premiere_ligne:
         df_dummies_actors[actor] = df_reco['directors'].apply(lambda x: actor in x).astype(int)
@@ -366,6 +383,8 @@ if selected=="Recommandation":
 
     #Partie composers
     composer_premiere_ligne = df_reco.iloc[index_movie]['composers']
+    if tag_composers_dummy:
+        composer_premiere_ligne = tag_composers_dummy + composer_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=composer_premiere_ligne)
     for actor in composer_premiere_ligne:
         df_dummies_actors[actor] = df_reco['composers'].apply(lambda x: actor in x).astype(int)
@@ -373,6 +392,8 @@ if selected=="Recommandation":
 
     #Partie writers
     writers_premiere_ligne = df_reco.iloc[index_movie]['writers']
+    if tag_writers_dummy:
+        writers_premiere_ligne = tag_writers_dummy + writers_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=writers_premiere_ligne)
     for actor in writers_premiere_ligne:
         df_dummies_actors[actor] = df_reco['writers'].apply(lambda x: actor in x).astype(int)
@@ -380,6 +401,8 @@ if selected=="Recommandation":
 
     #Partie producers
     producers_premiere_ligne = df_reco.iloc[index_movie]['producers']
+    if tag_producers_dummy:
+        producers_premiere_ligne = tag_producers_dummy + producers_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=producers_premiere_ligne)
     for actor in producers_premiere_ligne:
         df_dummies_actors[actor] = df_reco['producers'].apply(lambda x: actor in x).astype(int)
@@ -387,10 +410,13 @@ if selected=="Recommandation":
 
     #Partie other_crew
     other_crew_premiere_ligne = df_reco.iloc[index_movie]['other_crew']
+    if tag_producers_dummy:
+        other_crew_premiere_ligne = tag_other_crew_dummy + other_crew_premiere_ligne
     df_dummies_actors = pd.DataFrame(columns=other_crew_premiere_ligne)
     for actor in other_crew_premiere_ligne:
         df_dummies_actors[actor] = df_reco['other_crew'].apply(lambda x: actor in x).astype(int)
     df_reco = pd.concat([df_reco, df_dummies_actors], axis=1)
+
     #Header
 
     st.title("Votre film :")
@@ -513,54 +539,45 @@ if selected=="Recommandation":
     nombre_total_de_colonnes = len(df_aglo)
     # Nombre maximal de colonnes par ligne
     colonnes_par_ligne = 3
-
     # Boucle pour afficher les images et les titres dans des colonnes
     for i in range(len(df_aglo)):
         # Créer une nouvelle ligne de colonnes après chaque 'colonnes_par_ligne'
         if i % colonnes_par_ligne == 0:
             colonnes = st.columns(colonnes_par_ligne)
-
         # Calcul de l'index dans la ligne actuelle
         index_dans_la_ligne = i % colonnes_par_ligne
-
         # Calcul de l'index global
         index = i * colonnes_par_ligne + index_dans_la_ligne
-
         # Vérifier si l'index est dans la plage du DataFrame
         if index < nombre_total_de_colonnes:
             full_link = "https://image.tmdb.org/t/p/w500" + df_aglo['poster_path'].iloc[index]
             colonnes[index_dans_la_ligne].image(full_link, output_format="auto")
             colonnes[index_dans_la_ligne].write(df_aglo['french_title'].iloc[index])
-    
 
 if selected == "L'équipe du site":
     # Header
     st.title("Présentation de l'équipe :")
     col0, col1, col2 = st.columns(3)
-
     # Spécifier la largeur souhaitée
     largeur_image = 200  # Remplacez par la largeur souhaitée en pixels
-
     with col0:
         st.subheader('Clara')
+        st.write("The Scrum Princess")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Clara.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
-        st.write("The Scrum Princess")
-
     with col1:
         st.subheader('Basile')
+        st.write("Magician ML developer")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Basile.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
-        st.write("Magician ML developer")
-
     with col2:
         st.subheader('Costin')
+        st.write("Streamlit conqueror")
         image_path = "C:/Users/costi/Documents/Github/Project2/image/Costin.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
-        st.write("Streamlit conqueror")
 
 with st.sidebar:
     # Bouton avec une icône à partir de Font Awesome
