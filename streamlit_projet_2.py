@@ -544,12 +544,21 @@ if selected=="L'équipe du site":
     col0, col1, col2= st.columns(3)
     with col0:
         st.subheader('Clara')
+        image_path = "C:/Users/costi/Documents/Github/Project2/image/Clara.jpg"
+        image = Image.open(image_path)
+        st.sidebar.image(image, use_column_width=True)
         st.write("The Scrum Princess")
     with col1:
         st.subheader('Basile')
+        image_path = "C:/Users/costi/Documents/Github/Project2/image/Basile.jpg"
+        image = Image.open(image_path)
+        st.sidebar.image(image, use_column_width=True)
         st.write("Magician ML developer")
     with col2:
         st.subheader('Costin')
+        image_path = "C:/Users/costi/Documents/Github/Project2/image/Costin.jpg"
+        image = Image.open(image_path)
+        st.sidebar.image(image, use_column_width=True)
         st.write("Streamlit conqueror")        
 
 with st.sidebar:
