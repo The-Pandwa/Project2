@@ -61,7 +61,7 @@ df_ML = pd.read_csv('movie_beforeML.csv')
 
 # # Sidebar
 #Image sidebar projet
-image_path = r"C:/Users/costi/Documents/Github/Project2/image/cbc.png"
+image_path = "C:/Users/costi/Documents/Github/Project2/image/cbc.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
@@ -533,8 +533,6 @@ if selected=="Recommandation":
     #                 #print("Les genres proches", df_aglo['french_title'])
     #                 #popularite_target = float(df_target["popularite_ponderee"])
     #                 #original_popularite_target = float(df_target["popularite_ponderee"])
-
-
 
     #                 # Filtrer les lignes de df_titre en utilisant la méthode query
 
