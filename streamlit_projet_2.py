@@ -61,7 +61,7 @@ df_ML = pd.read_csv('movie_beforeML.csv')
 
 # # Sidebar
 #Image sidebar projet
-image_path = "C:/Users/costi/Documents/Github/Project2/image/cbc.png"
+image_path = r"C:/Users/costi/Documents/Github/Project2/image/cbc.png"
 image = Image.open(image_path)
 st.sidebar.image(image, use_column_width=True)
 
