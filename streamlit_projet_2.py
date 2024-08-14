@@ -715,19 +715,19 @@ if selected == "L'équipe du site":
     with col0:
         st.subheader('Clara')
         st.write("The Scrum Master of the Year")
-        image_path = "C:/Users/costi/Documents/Github/Project2/image/Clara.png"
+        image_path = "image/Clara.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
     with col1:
         st.subheader('Basile')
         st.write("Magician ML developer and hero of French Title")
-        image_path = "C:/Users/costi/Documents/Github/Project2/image/Basile.png"
+        image_path = "image/Basile.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
     with col2:
         st.subheader('Costin')
         st.write("Streamlit fighter")
-        image_path = "C:/Users/costi/Documents/Github/Project2/image/Costin.png"
+        image_path = "image/Costin.png"
         image = Image.open(image_path)
         st.image(image, use_column_width=True, width=largeur_image)
 
