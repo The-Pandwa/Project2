@@ -326,7 +326,7 @@ if selected=="Recommandation":
         #['Thriller','Mystery']
 
         df_reco = df_complet.copy()
-        index_movie = df_reco.loc[df_reco['french_title']== titre].index[0]
+        index_movie = df_reco.loc[df_reco['french_title']== titre].index[1]
         df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
 
         nb_tag=len(tags_actors)+len(tags_directors)+len(tags_crew)+len(tags_genres)
