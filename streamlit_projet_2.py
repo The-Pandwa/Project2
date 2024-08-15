@@ -331,7 +331,7 @@ if selected=="Recommandation":
             index_movie = matching_indexes[0]
             # Continue with your code
         else:
-            st.warning("Le film sélectionné n'existe pas dans la base de données.")
+            st.warning("Veuillez indiquer un titre de film.")
         df_reco["release_year"] = df_reco['release_date'].apply(lambda x: pd.to_datetime(x).year)
 
         nb_tag=len(tags_actors)+len(tags_directors)+len(tags_crew)+len(tags_genres)
