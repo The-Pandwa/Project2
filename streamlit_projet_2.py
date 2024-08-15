@@ -359,7 +359,7 @@ if selected=="Recommandation":
             else:
                 tag_other_crew_dummy.append(person)
 
-        genres_premiere_ligne = eval(df_reco.iloc[matching_indexes]['genres'])
+        genres_premiere_ligne = eval(df_reco.iloc[index_movie]['genres'])
 
         #Partie genres
         df_dummies_genres = pd.DataFrame(columns=genres_premiere_ligne)
